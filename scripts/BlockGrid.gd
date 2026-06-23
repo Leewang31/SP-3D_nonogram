@@ -85,4 +85,3 @@ func _is_visible(x: int, y: int, z: int) -> bool:
 		0: return x <= _filter_depth
 		1: return y <= _filter_depth
 		2: return z <= _filter_depth
-	return true
