@@ -1,0 +1,49 @@
+<h2>타겟 플랫폼</h2>
+<p class="subtitle">플랫폼이 기술 스택과 조작 방식 전부를 결정함</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>모바일 (iOS / Android)</h3>
+      <p>터치 기반 조작 — 탭으로 블록 제거, 핀치로 카메라 줌, 스와이프로 회전</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        추천 스택: <strong style="color:#7dd3fc">Flutter + Flame</strong> 또는 <strong style="color:#7dd3fc">Unity (모바일 빌드)</strong>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>닌텐도 원작과 동일한 터치 경험</li><li>배포 가능 (앱스토어)</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>3D 렌더링 모바일 최적화 필요</li><li>빌드 환경 세팅 비용</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>웹 브라우저</h3>
+      <p>마우스/터치 겸용 — 클릭으로 제거, 드래그로 카메라 회전</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        추천 스택: <strong style="color:#7dd3fc">Three.js + TypeScript</strong> 또는 <strong style="color:#7dd3fc">Babylon.js</strong>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>빌드 없이 즉시 실행·공유</li><li>프로토타입 이터레이션 가장 빠름</li><li>별도 설치 불필요</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>모바일 터치 UX 추가 작업 필요</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Godot 4 (데스크탑 + 모바일 export)</h3>
+      <p>GDScript로 구현 — 데스크탑 먼저, 이후 Android/iOS export</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        스택: <strong style="color:#7dd3fc">Godot 4 + GDScript</strong> (animal-hide-game과 동일)
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>기존 프로젝트(동물숨기)와 스택 통일</li><li>3D 렌더링 내장, 멀티플랫폼 export</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>Godot 모바일 export 세팅 복잡</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

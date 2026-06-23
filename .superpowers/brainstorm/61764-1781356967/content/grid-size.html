@@ -1,0 +1,65 @@
+<h2>퍼즐 격자 크기</h2>
+<p class="subtitle">격자 크기가 난이도·개발 복잡도·모바일 퍼포먼스를 결정</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>소형: 5×5×5 (125 블록)</h3>
+      <p>닌텐도 입체 피크로스 입문 난이도 수준</p>
+      <div style="margin-top:10px;display:grid;grid-template-columns:repeat(5,24px);gap:3px">
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#374151;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#374151;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#374151;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#374151;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+        <div style="width:20px;height:20px;background:#3b82f6;border-radius:2px"></div>
+      </div>
+      <p style="color:#86efac;margin-top:8px;font-size:13px">✓ 프로토타입 추천 — 메카닉 검증에 충분, 구현 빠름</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>중형: 10×10×10 (1,000 블록)</h3>
+      <p>닌텐도 원작 중간 난이도 수준. 실제 게임과 유사한 볼륨.</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul>
+          <li>실제 오브젝트 형태 표현 가능</li>
+          <li>닌텐도 원작 경험과 유사</li>
+        </ul></div>
+        <div class="cons"><h4>고려사항</h4><ul>
+          <li>모바일 렌더 1000 MeshInstance → 최적화 필요</li>
+          <li>카메라 조작 UX 복잡해짐</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>가변: 작게 시작 후 확장</h3>
+      <p>3×3×3 튜토리얼 → 5×5×5 → 10×10×10 단계적 지원</p>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul>
+          <li>퍼즐 데이터에 size 필드 → 코드 한 번에 지원</li>
+          <li>튜토리얼 레벨 자연스럽게 구성</li>
+        </ul></div>
+        <div class="cons"><h4>고려사항</h4><ul>
+          <li>UI가 크기별로 레이아웃 다르게 처리 필요</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>

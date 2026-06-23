@@ -1,0 +1,75 @@
+<h2>모바일 기술 스택</h2>
+<p class="subtitle">3D 렌더링 + 터치 조작 + iOS/Android 동시 지원</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Unity (C#)</h3>
+      <p>3D 게임 개발 업계 표준. 모바일 3D에 가장 검증된 스택.</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        Unity 2022 LTS + URP (Universal Render Pipeline)
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul>
+          <li>3D 퍼즐 게임 레퍼런스 풍부</li>
+          <li>iOS/Android 빌드 원클릭</li>
+          <li>터치 입력·카메라 컨트롤 에셋 다수</li>
+          <li>퍼포먼스 최적화 도구 내장</li>
+        </ul></div>
+        <div class="cons"><h4>고려사항</h4><ul>
+          <li>C# 학습 필요 (처음이면)</li>
+          <li>에디터 무거움</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Godot 4 (GDScript)</h3>
+      <p>동물숨기 프로젝트와 동일 스택. 3D 지원 내장, 모바일 export 가능.</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        Godot 4.x + GDScript + Mobile export template
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul>
+          <li>기존 프로젝트와 스택 통일 → 컨텍스트 재활용</li>
+          <li>오픈소스, 무료</li>
+          <li>GDScript 간결함</li>
+        </ul></div>
+        <div class="cons"><h4>고려사항</h4><ul>
+          <li>Godot 3D는 Unity보다 레퍼런스 적음</li>
+          <li>모바일 export 세팅 까다로움</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Flutter + three_dart / Flame3D</h3>
+      <p>Flutter로 UI, three_dart로 WebGL 기반 3D 렌더링.</p>
+      <div style="margin-top:8px;padding:8px 12px;background:#1a2332;border-radius:6px;font-size:13px;color:#94a3b8">
+        Flutter 3.x + three_dart (three.js 포팅)
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul>
+          <li>Flutter UI 생산성 높음</li>
+          <li>iOS/Android/Web 동시 지원</li>
+        </ul></div>
+        <div class="cons"><h4>고려사항</h4><ul>
+          <li>three_dart 커뮤니티 작음, 레퍼런스 부족</li>
+          <li>3D 게임 프레임워크로 미성숙</li>
+          <li>퍼포먼스 불확실</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:20px;padding:12px;background:#1e3a2f;border-radius:8px;color:#86efac;font-size:14px">
+  💡 <strong>추천:</strong> Unity (A) — 3D 퍼즐 모바일 게임에 가장 검증된 스택. 레퍼런스 많고 모바일 빌드 안정적.
+</p>

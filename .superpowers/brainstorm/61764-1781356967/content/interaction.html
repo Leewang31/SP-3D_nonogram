@@ -1,0 +1,80 @@
+<h2>터치 조작 모델</h2>
+<p class="subtitle">3D 블록을 모바일에서 어떻게 선택하고 제거하는가</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>레이어 슬라이스 방식</h3>
+      <p>한 번에 한 층(슬라이스)만 보여줌 → 탭으로 블록 제거 → 층 이동 버튼</p>
+      <div style="margin-top:12px;background:#0f172a;border-radius:8px;padding:16px;font-family:monospace;font-size:13px">
+        <div style="color:#94a3b8;margin-bottom:8px">Layer 2 / 5</div>
+        <div style="display:grid;grid-template-columns:repeat(5,32px);gap:4px;margin-bottom:12px">
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px;opacity:0.9"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#374151;border-radius:4px;border:1px dashed #4b5563"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#374151;border-radius:4px;border:1px dashed #4b5563"></div>
+          <div style="width:28px;height:28px;background:#374151;border-radius:4px;border:1px dashed #4b5563"></div>
+          <div style="width:28px;height:28px;background:#374151;border-radius:4px;border:1px dashed #4b5563"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#374151;border-radius:4px;border:1px dashed #4b5563"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+          <div style="width:28px;height:28px;background:#3b82f6;border-radius:4px"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <span style="background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:4px;color:#94a3b8">◀ 이전 층</span>
+          <span style="background:#1e293b;border:1px solid #334155;padding:4px 12px;border-radius:4px;color:#94a3b8">다음 층 ▶</span>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>탭 정확도 높음 (2D 그리드)</li><li>구현 단순</li><li>닌텐도 원작 DS 방식과 유사</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>3D 전체 형태 파악 어려움</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>자유 3D 회전 방식</h3>
+      <p>드래그로 카메라 오빗 → 탭으로 보이는 블록 레이캐스트 선택 → 제거</p>
+      <div style="margin-top:12px;background:#0f172a;border-radius:8px;padding:16px;font-size:13px;color:#94a3b8">
+        <div style="margin-bottom:6px">👆 <strong style="color:#e2e8f0">한 손가락 드래그</strong> → 카메라 회전</div>
+        <div style="margin-bottom:6px">🤏 <strong style="color:#e2e8f0">핀치</strong> → 줌 인/아웃</div>
+        <div style="margin-bottom:6px">👆 <strong style="color:#e2e8f0">탭</strong> → 블록 선택·제거</div>
+        <div>🔲 <strong style="color:#e2e8f0">길게 누르기</strong> → 플래그 마킹</div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>3D 오브젝트 전체 형태 파악 쉬움</li><li>시각적으로 임팩트 있음</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>안쪽 블록 선택 어려움</li><li>레이캐스트 구현 복잡</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>하이브리드 (닌텐도 Round 2 모바일 방식)</h3>
+      <p>3D 뷰 유지 + 축 방향 선택 버튼 → 해당 축 슬라이스 하이라이트 → 탭 제거</p>
+      <div style="margin-top:12px;background:#0f172a;border-radius:8px;padding:16px;font-size:13px;color:#94a3b8">
+        <div style="margin-bottom:6px">🔄 <strong style="color:#e2e8f0">드래그</strong> → 카메라 회전</div>
+        <div style="margin-bottom:6px">📐 <strong style="color:#e2e8f0">X/Y/Z 버튼</strong> → 편집 축 선택</div>
+        <div style="margin-bottom:6px">👆 <strong style="color:#e2e8f0">탭</strong> → 선택 축의 블록 제거</div>
+        <div>슬라이더로 층 이동 가능</div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>장점</h4><ul><li>3D 뷰 + 정밀 선택 둘 다</li><li>원작 모바일과 가장 유사</li></ul></div>
+        <div class="cons"><h4>고려사항</h4><ul><li>UI 복잡도↑, 학습 비용</li><li>구현 시간↑</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:20px;padding:12px;background:#1e3a2f;border-radius:8px;color:#86efac;font-size:14px">
+  💡 <strong>추천:</strong> A → C 순서. 레이어 슬라이스로 먼저 메카닉 검증 후 하이브리드로 업그레이드.
+</p>

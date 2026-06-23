@@ -1,0 +1,93 @@
+<h2>축 화살표 기즈모 방식</h2>
+<p class="subtitle">3D 블록 중심을 가로지르는 화살표 → 드래그로 축 방향 슬라이싱</p>
+
+<div class="section">
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">상태 1: 기본 (depth 전부 0)</div>
+      <div class="mockup-body" style="min-height:200px;display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:relative;width:120px;height:120px">
+          <!-- 3D 블록 표현 -->
+          <div style="position:absolute;top:10px;left:10px;width:100px;height:100px;background:#1e3a5f;border:2px solid #3b82f6;border-radius:4px;display:flex;align-items:center;justify-content:center">
+            <div style="display:grid;grid-template-columns:repeat(3,20px);gap:3px">
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#60a5fa;border-radius:2px;border:1px solid white"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:18px;height:18px;background:#3b82f6;border-radius:2px"></div>
+            </div>
+          </div>
+          <!-- X 화살표 (오른쪽) -->
+          <div style="position:absolute;top:50px;right:-28px;color:#ef4444;font-size:20px;font-weight:bold">→</div>
+          <div style="position:absolute;top:54px;right:-44px;color:#ef4444;font-size:10px">X</div>
+          <!-- Y 화살표 (위) -->
+          <div style="position:absolute;top:-20px;left:50px;color:#34d399;font-size:20px;font-weight:bold">↑</div>
+          <div style="position:absolute;top:-22px;left:65px;color:#34d399;font-size:10px">Y</div>
+          <!-- Z 화살표 (대각선) -->
+          <div style="position:absolute;bottom:-4px;left:-16px;color:#a78bfa;font-size:14px;font-weight:bold">↙</div>
+          <div style="position:absolute;bottom:-8px;left:-24px;color:#a78bfa;font-size:10px">Z</div>
+        </div>
+        <div style="position:absolute;bottom:8px;color:#64748b;font-size:11px">세 화살표 모두 표시</div>
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="mockup-header">상태 2: X 화살표 드래그 (depth=2)</div>
+      <div class="mockup-body" style="min-height:200px;display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="position:relative;width:140px;height:120px">
+          <!-- 잘린 블록 표현 -->
+          <div style="position:absolute;top:10px;left:10px;width:60px;height:100px;background:#1e3a5f;border:2px solid #ef4444;border-radius:4px;display:flex;align-items:center;justify-content:center">
+            <div style="display:grid;grid-template-columns:repeat(2,18px);gap:3px">
+              <div style="width:16px;height:16px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:16px;height:16px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:16px;height:16px;background:#374151;border-radius:2px;border:1px dashed #4b5563"></div>
+              <div style="width:16px;height:16px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:16px;height:16px;background:#3b82f6;border-radius:2px"></div>
+              <div style="width:16px;height:16px;background:#3b82f6;border-radius:2px"></div>
+            </div>
+          </div>
+          <!-- 숨겨진 블록 영역 -->
+          <div style="position:absolute;top:10px;left:74px;width:40px;height:100px;background:#0f172a;border:2px dashed #334155;border-radius:4px;display:flex;align-items:center;justify-content:center">
+            <span style="color:#334155;font-size:20px">⋯</span>
+          </div>
+          <!-- X 화살표만 (빨간, 이동됨) -->
+          <div style="position:absolute;top:50px;right:-12px;color:#ef4444;font-size:20px;font-weight:bold">→</div>
+          <div style="position:absolute;top:54px;right:-28px;color:#ef4444;font-size:10px">X=2</div>
+          <!-- Y, Z 화살표 없음 -->
+        </div>
+        <div style="position:absolute;bottom:8px;color:#64748b;font-size:11px">Y·Z 화살표 숨김, X만 표시</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px">
+  <h3>동작 규칙</h3>
+  <div style="background:#0f172a;border-radius:8px;padding:16px;font-family:monospace;font-size:12px;color:#94a3b8;line-height:2">
+    <div><span style="color:#7dd3fc">초기</span>: X=0, Y=0, Z=0 → 세 화살표 모두 표시</div>
+    <div><span style="color:#ef4444">X 화살표 드래그</span> → X depth 증가 → X&gt;0이면 Y,Z 화살표 hide</div>
+    <div><span style="color:#ef4444">X=0 복귀</span> → Y,Z 화살표 다시 표시</div>
+    <div style="margin-top:8px"><span style="color:#fbbf24">슬라이싱 결과</span>: X depth D → X축 [0..D] 범위만 visible</div>
+    <div><span style="color:#fbbf24">탭 제거</span>: visible한 블록만 레이캐스트 대상</div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <h3>고려할 점</h3>
+  <div style="background:#2d1f1f;border-radius:8px;padding:12px;font-size:13px;color:#fca5a5">
+    ⚠ <strong>카메라 오빗 드래그 vs 화살표 드래그 충돌</strong><br>
+    화살표 탭 → 드래그 모드 진입 (별도 핸들러)<br>
+    빈 공간 드래그 → 카메라 오빗 (기존 동작)<br>
+    <br>
+    → 화살표에 Collision 영역 필요 (StaticBody3D or Control Area)
+  </div>
+  <div style="background:#1e3a2f;border-radius:8px;padding:12px;font-size:13px;color:#86efac;margin-top:8px">
+    ✅ <strong>장점</strong>: 슬라이더 UI 불필요. 3D 공간 안에서 직관적 조작.<br>
+    축 전환 버튼도 불필요 → UI 깔끔.<br>
+    한 번에 한 축만 제어 → 혼란 없음.
+  </div>
+</div>

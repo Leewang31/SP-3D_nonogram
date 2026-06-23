@@ -1,0 +1,51 @@
+<h2>데이터 모델</h2>
+<p class="subtitle">퍼즐 데이터 포맷 + 핵심 타입 정의</p>
+
+<div class="mockup">
+  <div class="mockup-header">puzzle.json 포맷</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8">
+<pre style="margin:0;color:#94a3b8">{
+  <span style="color:#7dd3fc">"id"</span>: <span style="color:#86efac">"tutorial_01"</span>,
+  <span style="color:#7dd3fc">"size"</span>: <span style="color:#fb923c">3</span>,              <span style="color:#4b5563">// NxNxN</span>
+  <span style="color:#7dd3fc">"solution"</span>: [         <span style="color:#4b5563">// [z][y][x] = 1(채움) | 0(빔)</span>
+    [[1,1,1],[1,0,1],[1,1,1]],
+    [[1,0,1],[0,0,0],[1,0,1]],
+    [[1,1,1],[1,0,1],[1,1,1]]
+  ],
+  <span style="color:#7dd3fc">"clues"</span>: {            <span style="color:#4b5563">// 자동 생성 (solution에서 도출)</span>
+    <span style="color:#7dd3fc">"x"</span>: [...],          <span style="color:#4b5563">// clues.x[z][y] = {count, groups}</span>
+    <span style="color:#7dd3fc">"y"</span>: [...],          <span style="color:#4b5563">// clues.y[z][x]</span>
+    <span style="color:#7dd3fc">"z"</span>: [...]           <span style="color:#4b5563">// clues.z[y][x]</span>
+  }
+}</pre>
+  </div>
+</div>
+
+<div style="margin-top:16px" class="mockup">
+  <div class="mockup-header">핵심 타입 (GDScript enum)</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;line-height:2">
+    <div><span style="color:#a78bfa">enum</span> <span style="color:#fbbf24">BlockState</span> { <span style="color:#3b82f6">INTACT</span>, <span style="color:#ef4444">REMOVED</span>, <span style="color:#34d399">MUST_KEEP</span> }</div>
+    <div style="color:#4b5563;font-size:11px;margin-bottom:8px">  └ MUST_KEEP: 플레이어가 "유지" 확정 마킹 (이후 확장)</div>
+    <div><span style="color:#a78bfa">enum</span> <span style="color:#fbbf24">RemoveResult</span> { <span style="color:#34d399">OK</span>, <span style="color:#ef4444">WRONG</span>, <span style="color:#94a3b8">ALREADY_REMOVED</span> }</div>
+    <div style="color:#4b5563;font-size:11px;margin-bottom:8px">  └ WRONG: 남겨야 할 블록 제거 시도 → 페널티</div>
+    <div><span style="color:#a78bfa">class</span> <span style="color:#fbbf24">ClueGroup</span>:</div>
+    <div style="padding-left:16px;color:#94a3b8">count: int        <span style="color:#4b5563"># 남을 블록 수</span></div>
+    <div style="padding-left:16px;color:#94a3b8">marker: int       <span style="color:#4b5563"># 0=없음, 2=○(2그룹+), 3=□(3그룹+)</span></div>
+  </div>
+</div>
+
+<div style="margin-top:16px" class="mockup">
+  <div class="mockup-header">클루 도출 로직 (순수 함수)</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8">
+    <div style="color:#4b5563"># solution 배열에서 클루 자동 생성</div>
+    <div><span style="color:#a78bfa">func</span> <span style="color:#34d399">_compute_clue</span>(line: Array) → ClueGroup:</div>
+    <div style="padding-left:16px">count = line.count(<span style="color:#fb923c">1</span>)</div>
+    <div style="padding-left:16px">groups = <span style="color:#34d399">_count_groups</span>(line)  <span style="color:#4b5563"># 연속 구간 수</span></div>
+    <div style="padding-left:16px">marker = <span style="color:#fb923c">0</span> <span style="color:#a78bfa">if</span> groups &lt;= <span style="color:#fb923c">1</span> <span style="color:#a78bfa">else</span> min(groups, <span style="color:#fb923c">3</span>)</div>
+    <div style="padding-left:16px"><span style="color:#a78bfa">return</span> ClueGroup(count, marker)</div>
+  </div>
+</div>
+
+<p style="margin-top:16px;padding:12px;background:#1a2332;border-radius:8px;color:#94a3b8;font-size:13px">
+  💡 <strong style="color:#7dd3fc">설계 원칙:</strong> clues는 solution에서 결정론적 도출. JSON에 저장은 선택 사항 (런타임 생성 가능). PuzzleModel은 solution만 필수 입력으로 받음.
+</p>

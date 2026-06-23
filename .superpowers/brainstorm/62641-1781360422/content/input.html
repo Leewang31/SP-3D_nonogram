@@ -1,0 +1,62 @@
+<h2>입력 처리</h2>
+<p class="subtitle">터치 이벤트 분류 → 카메라 / 블록 선택 / 레이어 이동</p>
+
+<div class="mockup">
+  <div class="mockup-header">CameraController.gd — 터치 상태 머신</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.9">
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+      <div>
+        <div style="color:#7dd3fc;margin-bottom:6px">터치 1개</div>
+        <div>BEGAN  → 시작점 기록</div>
+        <div>MOVED  → delta 계산 → 카메라 오빗</div>
+        <div>ENDED  → <span style="color:#fbbf24">이동량 < TAP_THRESHOLD?</span></div>
+        <div style="padding-left:16px">→ YES: 레이캐스트 발사 → 블록 hit</div>
+        <div style="padding-left:16px">→ NO: 오빗 종료</div>
+      </div>
+      <div>
+        <div style="color:#f97316;margin-bottom:6px">터치 2개 (핀치)</div>
+        <div>BEGAN  → 두 터치 거리 기록</div>
+        <div>MOVED  → 거리 변화 → 카메라 줌</div>
+        <div>ENDED  → 줌 종료</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px" class="mockup">
+  <div class="mockup-header">레이캐스트 → 블록 제거 흐름</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:2">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span style="background:#1e3a5f;padding:4px 10px;border-radius:4px;color:#7dd3fc">탭 위치</span>
+      <span>→</span>
+      <span style="background:#1a2332;padding:4px 10px;border-radius:4px;color:#94a3b8">Camera.project_ray_origin/direction</span>
+      <span>→</span>
+      <span style="background:#1a2332;padding:4px 10px;border-radius:4px;color:#94a3b8">PhysicsRayQueryParameters3D</span>
+      <span>→</span>
+      <span style="background:#1a2332;padding:4px 10px;border-radius:4px;color:#94a3b8">space_state.intersect_ray()</span>
+    </div>
+    <div style="margin-top:12px">
+      <div>hit 없음 → 무시</div>
+      <div>hit 있음 → collider.get_meta(<span style="color:#86efac">"grid_pos"</span>) → (x, y, z)</div>
+      <div style="padding-left:16px">→ puzzle_model.remove_block(x, y, z)</div>
+      <div style="padding-left:32px"><span style="color:#34d399">OK</span>      → block_grid.hide_block(x,y,z) + 이펙트</div>
+      <div style="padding-left:32px"><span style="color:#ef4444">WRONG</span>   → 페널티 +1 + 진동 피드백</div>
+      <div style="padding-left:32px"><span style="color:#94a3b8">ALREADY</span> → 무시</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px" class="mockup">
+  <div class="mockup-header">레이어 슬라이더 (CanvasLayer)</div>
+  <div class="mockup-body" style="font-family:monospace;font-size:12px;color:#94a3b8;line-height:2">
+    <div>HSlider.value_changed → active_layer: int 업데이트</div>
+    <div>BlockGrid: active_layer 이하 블록만 <span style="color:#3b82f6">visible = true</span></div>
+    <div style="color:#4b5563"># active_layer = size-1 이면 전체 표시 (기본값)</div>
+    <div style="margin-top:8px;color:#fbbf24">⚠ 슬라이더 이동 중 레이캐스트 비활성화</div>
+    <div style="color:#4b5563"># UI 터치와 3D 터치 충돌 방지</div>
+  </div>
+</div>
+
+<div style="margin-top:16px;padding:12px;background:#1a2332;border-radius:8px;color:#94a3b8;font-size:13px">
+  <strong style="color:#7dd3fc">TAP_THRESHOLD</strong> = 10px. 이 이하 이동은 탭으로 판정. 오빗 중 실수 제거 방지.
+</div>

@@ -1,0 +1,62 @@
+<h2>핵심 게임 방식 선택</h2>
+<p class="subtitle">우리가 만들 게임의 기본 메카닉 — Picross 3D 원작 스타일 vs 고전 노노그램 스타일</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Picross 3D 스타일 (닌텐도 원작)</h3>
+      <p>꽉 찬 블록에서 시작 → 불필요한 블록 제거 → 3D 오브젝트(토끼, 자동차 등) 조각</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>직관적 조작감 (깎기)</li>
+            <li>결과물이 3D 오브젝트 → 시각적 보상 명확</li>
+            <li>레퍼런스(닌텐도)가 검증된 재미</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>고려사항</h4>
+          <ul>
+            <li>퍼즐 제작 = 3D 오브젝트 디자인 필요</li>
+            <li>색상(파랑/주황) 시스템 구현 복잡도↑</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:#1a2332;border-radius:8px;font-family:monospace;font-size:13px;color:#7dd3fc">
+        규칙: 줄의 숫자 = 그 줄에 남을 블록 수<br>
+        원형 숫자 = 2개 이상 그룹 / 사각형 = 3개 이상 그룹
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>고전 3D 노노그램 스타일</h3>
+      <p>빈 NxNxN 격자에서 시작 → 숫자 단서 보고 채워야 할 셀 추론·마킹</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros">
+          <h4>장점</h4>
+          <ul>
+            <li>퍼즐 생성 알고리즘화 쉬움</li>
+            <li>2D 노노그램 로직 직접 확장</li>
+            <li>렌더러 간단 (빈 격자에 마킹)</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>고려사항</h4>
+          <ul>
+            <li>결과물이 뭔지 알기 어려움 (추상적)</li>
+            <li>닌텐도 원작과 다른 경험</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:#1a2332;border-radius:8px;font-family:monospace;font-size:13px;color:#7dd3fc">
+        규칙: 각 행/열/기둥 단서 = 연속 채움 구간 길이<br>
+        예: [2,1] = ██·█ (2칸 연속, 1칸 연속)
+      </div>
+    </div>
+  </div>
+</div>
