@@ -53,7 +53,7 @@ func _on_touch(event: InputEventScreenTouch) -> void:
 func _on_drag(event: InputEventScreenDrag) -> void:
 	_touches[event.index] = event.position
 	if _is_pinching and _touches.size() == 2:
-		var new_dist := _touches[0].distance_to(_touches[1])
+		var new_dist: float = (_touches[0] as Vector2).distance_to(_touches[1] as Vector2)
 		var delta := new_dist - _pinch_start_dist
 		_distance = clamp(_distance - delta * PINCH_SENSITIVITY, MIN_DISTANCE, MAX_DISTANCE)
 		_pinch_start_dist = new_dist
