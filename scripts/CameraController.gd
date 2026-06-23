@@ -79,7 +79,7 @@ func _do_raycast(screen_pos: Vector2) -> void:
 	var hit := space.intersect_ray(params)
 	if not hit:
 		return
-	var collider := hit.collider
+	var collider := hit["collider"] as CollisionObject3D
 	if collider.has_meta("grid_pos"):
 		var gp := collider.get_meta("grid_pos") as Vector3i
 		block_tapped.emit(gp.x, gp.y, gp.z)
