@@ -48,6 +48,7 @@ func _add_arrow(axis: int, pos: Vector3, color: Color, rotation_euler: Vector3) 
 	add_child(root)
 
 func on_axis_tapped(axis: int) -> void:
+	assert(axis >= 0 and axis < 3, "AxisGizmo: axis must be 0, 1, or 2")
 	var d := _depths[axis]
 	if d == -1:
 		d = 0
