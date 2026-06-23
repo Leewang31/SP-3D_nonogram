@@ -68,6 +68,18 @@ func flash_block_red(x: int, y: int, z: int) -> void:
 	mat.albedo_color = original
 
 func set_depth_filter(axis: int, depth: int) -> void:
+	if depth == -1:
+		_filter_axis = -1
+		_filter_depth = -1
+		# show all non-removed blocks
+		var n := _model.size
+		for z in n:
+			for y in n:
+				for x in n:
+					if _model.get_block_state(x, y, z) == PuzzleModel.BlockState.REMOVED:
+						continue
+					_blocks[z][y][x].visible = true
+		return
 	_filter_axis = axis
 	_filter_depth = depth
 	var n := _model.size
@@ -85,3 +97,4 @@ func _is_visible(x: int, y: int, z: int) -> bool:
 		0: return x <= _filter_depth
 		1: return y <= _filter_depth
 		2: return z <= _filter_depth
+		_: return true

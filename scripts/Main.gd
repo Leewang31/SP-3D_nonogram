@@ -103,6 +103,7 @@ func _on_solved() -> void:
 	_penalty_label.modulate = Color.YELLOW
 
 func _on_game_over() -> void:
+	_solved = true   # prevent re-entry during 2s wait
 	_penalty_label.text = "GAME OVER — Resetting..."
 	await get_tree().create_timer(2.0).timeout
 	_load_and_build()
