@@ -1,0 +1,22 @@
+; Engine configuration file.
+[application]
+
+config/name="Picross3D"
+config/features=PackedStringArray("4.3", "Mobile")
+config/icon="res://icon.svg"
+run/main_scene="res://Main.tscn"
+
+[display]
+
+window/size/viewport_width=1080
+window/size/viewport_height=1920
+window/size/mode=4
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
