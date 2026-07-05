@@ -57,7 +57,7 @@ func _make_block(x: int, y: int, z: int, half: float) -> Node3D:
 	return root
 
 func remove_block_visual(x: int, y: int, z: int) -> void:
-	var block := _blocks[z][y][x]
+	var block: Node3D = _blocks[z][y][x]
 	block.visible = false
 	var body := block.get_child(1) as StaticBody3D
 	body.collision_layer = 0
