@@ -57,7 +57,10 @@ func _make_block(x: int, y: int, z: int, half: float) -> Node3D:
 	return root
 
 func remove_block_visual(x: int, y: int, z: int) -> void:
-	_blocks[z][y][x].visible = false
+	var block := _blocks[z][y][x]
+	block.visible = false
+	var body := block.get_child(1) as StaticBody3D
+	body.collision_layer = 0
 
 func flash_block_red(x: int, y: int, z: int) -> void:
 	var mesh := _blocks[z][y][x].get_child(0) as MeshInstance3D
