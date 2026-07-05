@@ -2,7 +2,7 @@
 class_name ClueDisplay
 extends Node3D
 
-const LABEL_OFFSET := 1.0   # 노출 표면 바깥쪽 거리
+const LABEL_OFFSET := 0.05   # 노출 표면 바깥쪽 거리
 
 var _model: PuzzleModel
 var _labels: Dictionary   # "axis,a,b" -> Label3D
