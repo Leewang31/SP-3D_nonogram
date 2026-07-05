@@ -55,29 +55,21 @@
 
 단서 생성은 솔루션에서 결정론적·순수 함수로 도출. 사이드이펙트 없어야 함.
 
-## LLM Wiki 운영 규칙
+# Wiki 운영 규칙
 
-이 프로젝트는 LLM wiki 패턴으로 지식을 관리한다.
+이 프로젝트는 wiki/ 폴더에 지식베이스를 유지합니다.
 
-### 폴더 구조
-| 폴더 | 용도 |
-|---|---|
-| `wiki/projects/` | 프로젝트 위키 (LLM 생성·유지) |
-| `wiki/concepts/` | 개념 페이지, 합성 노트 |
-| `wiki/knowledge/` | 레퍼런스, 영구 지식 |
-| `raw/` | 원본 소스 — 읽기 전용. 절대 수정 금지 |
-| `index.md` | 볼트 전체 카탈로그 (항상 최신 유지) |
-| `log.md` | 추가 전용 운영 로그 |
+## 구조
+- wiki/index.md: 모든 wiki 페이지 목록 + 한줄 요약
+- wiki/log.md: 시간순 작업 기록 (append-only)
+- wiki/concepts/: 기능, 시스템, 설계 개념별 페이지
+- wiki/decisions/: 주요 설계 결정과 이유
 
-### 모든 wiki 노트 필수 규칙
-1. 프론트매터: `date`, `type`, `tags`, `ai-first: true`
-2. 첫 섹션: `## 미래의 Claude를 위해` — 2-3문장 요약
-3. 외부 사실에 날짜 마커: `(as of YYYY-MM)`
-4. 사람/프로젝트/개념 언급 시 `[[wikilink]]` 사용
+## 작업 완료 후 규칙
+의미있는 변경(기능 추가/수정, 버그 수정, 설계 결정)이었다면:
+1. wiki/log.md에 `## [날짜] 작업명` 형식으로 append
+2. 관련된 concepts/ 페이지가 있으면 업데이트, 없으면 새로 생성
+3. wiki/index.md에 새 페이지 등록
+4. 기존 페이지와 모순되는 내용이 있으면 명시적으로 표시
 
-### 대화 후 저장 규칙
-- 결정 사항 → `wiki/projects/3d-nonogram.md` Key Decisions 섹션
-- 새 개념/패턴 → `wiki/concepts/`
-- 기술 지식 → `wiki/knowledge/`
-- 모든 쓰기 작업 → `log.md`에 항목 추가
-- 새 노트 생성 시 → `index.md` 업데이트
+단순 조회/질문(파일 읽기, 설명 요청)이었다면 위키를 건드리지 않습니다.
