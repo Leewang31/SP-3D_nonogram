@@ -30,9 +30,16 @@ func on_block_removed(x: int, y: int, z: int) -> void:
 func _add_label(axis: int, a: int, b: int) -> void:
 	var clue := _model.get_clue(axis, a, b)
 	var label := _make_label(str(clue))
+	label.rotation = _face_rotation(axis)
 	add_child(label)
 	_labels["%d,%d,%d" % [axis, a, b]] = label
 	_reposition(axis, a, b)
+
+func _face_rotation(axis: int) -> Vector3:
+	match axis:
+		0: return Vector3(0, PI / 2.0, 0)   # X+ 면을 바라보도록 회전
+		1: return Vector3(-PI / 2.0, 0, 0)  # Y+ 면을 바라보도록 회전
+		_: return Vector3.ZERO              # Z+ 면 (기본 방향과 일치)
 
 func _reposition(axis: int, a: int, b: int) -> void:
 	var label: Label3D = _labels["%d,%d,%d" % [axis, a, b]]
@@ -65,7 +72,6 @@ func _make_label(text: String) -> Label3D:
 	label.text = text
 	label.font_size = 48
 	label.pixel_size = 0.005
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = Color.WHITE
 	label.outline_modulate = Color.BLACK
 	label.outline_size = 4
