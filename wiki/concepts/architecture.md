@@ -29,11 +29,15 @@ puzzle.json → PuzzleModel.gd → BlockGrid.gd (렌더링)
 
 ```gdscript
 func load_puzzle(data: Dictionary) -> void
-func remove_block(x, y, z: int) -> RemoveResult  # OK | WRONG | ALREADY_REMOVED
-func get_clues(axis: Axis, index: int) -> Array[ClueGroup]
+func remove_block(x, y, z: int) -> RemoveResult          # OK | WRONG | ALREADY_REMOVED
+func get_clue(axis: int, index_a: int, index_b: int) -> int
+func get_intact_count(axis: int, index_a: int, index_b: int) -> int
+func is_confirmed_keep(x, y, z: int) -> bool             # 라인 intact 수 == 클루 → 유지 확정
 func is_solved() -> bool
-func get_block_state(x, y, z: int) -> BlockState  # INTACT | REMOVED | MUST_KEEP
+func get_block_state(x, y, z: int) -> BlockState         # INTACT | REMOVED
 ```
+
+⚠️ 초기 설계안에는 `BlockState.MUST_KEEP`을 상태값으로 넣을 계획이었으나, 실제 구현은 `is_confirmed_keep()`을 매 라인마다 동적으로 계산하는 순수 함수로 대체 (상태를 이중으로 저장하지 않음, → [[core-decisions]] 2026-07-05).
 
 ---
 

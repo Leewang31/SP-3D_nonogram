@@ -24,6 +24,7 @@ func _init() -> void:
     _test_is_solved(data)
     _test_clue_x_axis(data)
     _test_clue_z_axis(data)
+    _test_confirmed_keep(data)
 
     print("\nResults: %d passed, %d failed" % [_passed, _failed])
     quit(_failed)
@@ -96,3 +97,17 @@ func _test_clue_z_axis(data: Dictionary) -> void:
     _assert(m.get_clue(2, 1, 1) == 3, "Z-axis clue (x=1,y=1) == 3")
     # (x=0, y=0) → solution[*][0][0] = [0,0,0] → count=0
     _assert(m.get_clue(2, 0, 0) == 0, "Z-axis clue (x=0,y=0) == 0")
+
+func _test_confirmed_keep(data: Dictionary) -> void:
+    var m = PuzzleModel.new()
+    m.load_puzzle(data)
+    # X-axis row (y=1,z=1) is fully solution=1 ([1,1,1]) → intact count 3 == clue 3 from the start
+    _assert(m.is_confirmed_keep(0, 1, 1), "fully-filled row is confirmed keep before any removal")
+    # X-axis row (y=1,z=0): solution=[0,1,0], clue=1 → not confirmed while both 0-cells remain intact
+    _assert(not m.is_confirmed_keep(1, 1, 0), "keep-block not confirmed while row still has removable cells")
+    # Remove one of the two 0-cells → still not confirmed (1 removable cell left)
+    m.remove_block(0, 1, 0)
+    _assert(not m.is_confirmed_keep(1, 1, 0), "keep-block not confirmed with one removable cell left")
+    # Remove the last 0-cell → intact count (1) == clue (1) → now confirmed
+    m.remove_block(2, 1, 0)
+    _assert(m.is_confirmed_keep(1, 1, 0), "keep-block confirmed once row is reduced to clue count")

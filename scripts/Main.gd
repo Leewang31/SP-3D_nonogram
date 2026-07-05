@@ -47,6 +47,7 @@ func _load_and_build() -> void:
 	_grid = BlockGrid.new()
 	add_child(_grid)
 	_grid.setup(_model)
+	_refresh_all_confirmed()
 
 	# 힌트 숫자
 	_clues = ClueDisplay.new()
@@ -79,11 +80,14 @@ func _load_and_build() -> void:
 func _on_block_tapped(x: int, y: int, z: int) -> void:
 	if _solved:
 		return
+	if _model.is_confirmed_keep(x, y, z):
+		return   # 유지 확정 블록 — 페널티 없이 무시
 	var result := _model.remove_block(x, y, z)
 	match result:
 		PuzzleModel.RemoveResult.OK:
 			_grid.remove_block_visual(x, y, z)
 			_clues.on_block_removed(x, y, z)
+			_refresh_confirmed_lines(x, y, z)
 			if _model.is_solved():
 				_on_solved()
 		PuzzleModel.RemoveResult.WRONG:
@@ -94,6 +98,32 @@ func _on_block_tapped(x: int, y: int, z: int) -> void:
 				_on_game_over()
 		PuzzleModel.RemoveResult.ALREADY_REMOVED:
 			pass
+
+func _refresh_all_confirmed() -> void:
+	var n := _model.size
+	for z in n:
+		for y in n:
+			for x in n:
+				if _model.get_block_state(x, y, z) == PuzzleModel.BlockState.INTACT:
+					_grid.set_block_confirmed(x, y, z, _model.is_confirmed_keep(x, y, z))
+
+func _refresh_confirmed_lines(x: int, y: int, z: int) -> void:
+	_refresh_line(0, y, z)
+	_refresh_line(1, x, z)
+	_refresh_line(2, x, y)
+
+func _refresh_line(axis: int, a: int, b: int) -> void:
+	var n := _model.size
+	for i in n:
+		var bx: int
+		var by: int
+		var bz: int
+		match axis:
+			0: bx = i; by = a; bz = b
+			1: bx = a; by = i; bz = b
+			2: bx = a; by = b; bz = i
+		if _model.get_block_state(bx, by, bz) == PuzzleModel.BlockState.INTACT:
+			_grid.set_block_confirmed(bx, by, bz, _model.is_confirmed_keep(bx, by, bz))
 
 func _on_depth_changed(axis: int, depth: int) -> void:
 	_grid.set_depth_filter(axis, depth)

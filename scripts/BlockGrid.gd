@@ -5,6 +5,8 @@ extends Node3D
 const BLOCK_SIZE := 1.0
 const BLOCK_GAP := 0.1
 const STEP := BLOCK_SIZE + BLOCK_GAP
+const DEFAULT_COLOR := Color(0.3, 0.5, 0.9)
+const CONFIRMED_COLOR := Color(0.85, 0.65, 0.15)
 
 var _model: PuzzleModel
 var _blocks: Array   # [z][y][x] = Node3D
@@ -38,7 +40,7 @@ func _make_block(x: int, y: int, z: int, half: float) -> Node3D:
 	box.size = Vector3(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
 	mesh.mesh = box
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.3, 0.5, 0.9)
+	mat.albedo_color = DEFAULT_COLOR
 	mesh.material_override = mat
 	root.add_child(mesh)
 
@@ -61,6 +63,11 @@ func remove_block_visual(x: int, y: int, z: int) -> void:
 	block.visible = false
 	var body := block.get_child(1) as StaticBody3D
 	body.collision_layer = 0
+
+func set_block_confirmed(x: int, y: int, z: int, confirmed: bool) -> void:
+	var mesh := _blocks[z][y][x].get_child(0) as MeshInstance3D
+	var mat := mesh.material_override as StandardMaterial3D
+	mat.albedo_color = CONFIRMED_COLOR if confirmed else DEFAULT_COLOR
 
 func flash_block_red(x: int, y: int, z: int) -> void:
 	var mesh := _blocks[z][y][x].get_child(0) as MeshInstance3D

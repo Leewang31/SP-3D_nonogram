@@ -50,6 +50,34 @@ func get_clue(axis: int, index_a: int, index_b: int) -> int:
                 count += _solution[z][index_b][index_a]
     return count
 
+func get_intact_count(axis: int, index_a: int, index_b: int) -> int:
+    var count := 0
+    match axis:
+        0:  # X: index_a=y, index_b=z
+            for x in size:
+                if _state[index_b][index_a][x] == BlockState.INTACT:
+                    count += 1
+        1:  # Y: index_a=x, index_b=z
+            for y in size:
+                if _state[index_b][y][index_a] == BlockState.INTACT:
+                    count += 1
+        2:  # Z: index_a=x, index_b=y
+            for z in size:
+                if _state[z][index_b][index_a] == BlockState.INTACT:
+                    count += 1
+    return count
+
+func is_confirmed_keep(x: int, y: int, z: int) -> bool:
+    if _state[z][y][x] != BlockState.INTACT:
+        return false
+    if get_intact_count(0, y, z) == get_clue(0, y, z):
+        return true
+    if get_intact_count(1, x, z) == get_clue(1, x, z):
+        return true
+    if get_intact_count(2, x, y) == get_clue(2, x, y):
+        return true
+    return false
+
 func is_solved() -> bool:
     return _removed_count == _to_remove_count
 
