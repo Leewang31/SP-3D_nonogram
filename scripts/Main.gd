@@ -83,6 +83,7 @@ func _on_block_tapped(x: int, y: int, z: int) -> void:
 	match result:
 		PuzzleModel.RemoveResult.OK:
 			_grid.remove_block_visual(x, y, z)
+			_clues.on_block_removed(x, y, z)
 			if _model.is_solved():
 				_on_solved()
 		PuzzleModel.RemoveResult.WRONG:
