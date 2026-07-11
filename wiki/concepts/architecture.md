@@ -2,9 +2,12 @@
 
 세 책임 분리: 퍼즐 모델 / 렌더러 / 인터랙션 (→ CLAUDE.md 핵심 아키텍처 참고)
 
-## 씬 트리
+## 씬 흐름
 
 ```
+Home.tscn (Control)          ← 스테이지 선택 화면, main_scene
+  └─ 탭 → GameState.select(path, stage) → change_scene_to_file(Main.tscn)
+
 Main.tscn (Node3D)
 ├── DirectionalLight3D
 ├── WorldEnvironment      ← ProceduralSkyMaterial 파스텔 그라디언트 하늘
@@ -12,11 +15,12 @@ Main.tscn (Node3D)
 ├── ClueDisplay.gd        ← Label3D 힌트 숫자 + 원형 칩 배경(QuadMesh)
 ├── AxisGizmo.gd          ← X/Y/Z 레이어 depth 탭 제어
 ├── CameraController.gd (Camera3D)
-└── HUD.gd (CanvasLayer)  ← 스테이지뱃지, 하트(lives), 기어/일시정지 버튼,
+└── HUD.gd (CanvasLayer)  ← 스테이지뱃지, 홈 버튼, 하트(lives), 기어/일시정지 버튼,
                              미스터리 타이틀+타이머, 회전 힌트 pill, clear/game-over 메시지
+                             (홈 버튼 → Main.gd가 change_scene_to_file(Home.tscn))
 ```
 
-Main.gd가 모든 노드 프로그래매틱 생성 (→ [[core-decisions]]). HUD.gd는 claude.ai/design에서 가져온 모바일 화면 목업(Picross3D.dc.html)을 Godot Control 트리로 구현한 것 (→ [[core-decisions]] 2026-07-11).
+`GameState.gd` (autoload) — `selected_puzzle_path`, `stage_number`를 Home→Main 씬 전환 간 전달하는 유일한 전역 상태. Main.gd가 모든 노드 프로그래매틱 생성 (→ [[core-decisions]]). HUD.gd는 claude.ai/design에서 가져온 모바일 화면 목업(Picross3D.dc.html)을 Godot Control 트리로 구현한 것 (→ [[core-decisions]] 2026-07-11). Home.gd도 같은 카드 스타일(흰 라운드 패널 + 그림자)을 재사용하되 코드는 공유하지 않고 각자 로컬 헬퍼로 중복 구현 (프로토타입 단계에서 공유 유틸 추상화는 이르다고 판단).
 
 ## 데이터 흐름
 
@@ -51,7 +55,21 @@ func reveal_title(text: String) -> void
 func show_status(text: String, color: Color) -> void   # CLEAR! / GAME OVER
 func hide_status() -> void
 signal pause_pressed(is_paused: bool)                  # Main.gd가 get_tree().paused에 연결
+signal home_pressed                                     # Main.gd가 Home.tscn으로 전환
 ```
+
+## 퍼즐 목록 (puzzles/*.json)
+
+Home.gd `PUZZLE_PATHS` 상수 배열로 순서 고정 (디렉터리 알파벳 스캔 대신 명시적 리스트 — `tutorial_01`이 `puzzle_02`보다 사전순 뒤라 스캔 시 순서 꼬임 방지).
+
+| 스테이지 | 파일 | 이름 | 비고 |
+|---|---|---|---|
+| 1 | tutorial_01.json | 십자가 | 최초 튜토리얼 |
+| 2 | puzzle_02.json | 상자 | 쉘(26블록), 1칸만 제거 — 온보딩용 |
+| 3 | puzzle_03.json | 고리 | 단일 레이어 사각 고리 |
+| 4 | puzzle_04.json | 계단 | 3단 계단 |
+| 5 | puzzle_05.json | T자 | |
+| 6 | puzzle_06.json | L자 | |
 
 ---
 

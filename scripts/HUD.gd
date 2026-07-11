@@ -3,6 +3,7 @@ class_name HUD
 extends CanvasLayer
 
 signal pause_pressed(is_paused: bool)
+signal home_pressed
 
 const CARD_COLOR := Color(1, 1, 1)
 const CARD_SHADOW := Color(0.835, 0.871, 0.902)
@@ -32,6 +33,10 @@ func _build() -> void:
 	add_child(top_bar)
 
 	top_bar.add_child(_make_stage_badge())
+
+	var home_btn := _make_icon_button("⌂")
+	home_btn.pressed.connect(func(): home_pressed.emit())
+	top_bar.add_child(home_btn)
 
 	var spacer1 := Control.new()
 	spacer1.custom_minimum_size = Vector2(70, 0)

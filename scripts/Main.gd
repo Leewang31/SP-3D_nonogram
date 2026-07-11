@@ -2,8 +2,7 @@
 extends Node3D
 
 const MAX_LIVES := 3
-const STAGE_NUMBER := 1
-const PUZZLE_PATH := "res://puzzles/tutorial_01.json"
+const HOME_SCENE_PATH := "res://Home.tscn"
 
 var _model: PuzzleModel
 var _grid: BlockGrid
@@ -35,7 +34,7 @@ func _load_and_build() -> void:
 	await get_tree().process_frame
 
 	# 모델
-	var raw := FileAccess.get_file_as_string(PUZZLE_PATH)
+	var raw := FileAccess.get_file_as_string(GameState.selected_puzzle_path)
 	_model = PuzzleModel.new()
 	_model.load_puzzle(JSON.parse_string(raw))
 
@@ -88,10 +87,11 @@ func _load_and_build() -> void:
 	_hud = HUD.new()
 	_hud.process_mode = Node.PROCESS_MODE_ALWAYS   # 일시정지 중에도 버튼 반응
 	add_child(_hud)
-	_hud.set_stage(STAGE_NUMBER)
+	_hud.set_stage(GameState.stage_number)
 	_hud.set_lives(_lives, MAX_LIVES)
 	_hud.set_timer_seconds(0.0)
 	_hud.pause_pressed.connect(_on_pause_pressed)
+	_hud.home_pressed.connect(_on_home_pressed)
 
 func _on_block_tapped(x: int, y: int, z: int) -> void:
 	if _solved:
@@ -158,3 +158,7 @@ func _on_game_over() -> void:
 
 func _on_pause_pressed(is_paused: bool) -> void:
 	get_tree().paused = is_paused
+
+func _on_home_pressed() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file(HOME_SCENE_PATH)
