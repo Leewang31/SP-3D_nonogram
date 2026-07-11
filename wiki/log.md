@@ -29,3 +29,7 @@ CLAUDE.md 위키 운영 규칙 변경 (projects/concepts/knowledge/raw 구조 �
 
 ## 2026-07-11 MUST_KEEP 판정 OR→AND 변경 + ClueDisplay 빈 라인 마커 숨김
 사용자 확인 결과 `PuzzleModel.is_confirmed_keep()`이 X/Y/Z 세 축 중 하나만 클루값과 일치해도 확정 유지(금색)로 판정하던 것을, 세 축 모두 동시에 일치해야만 확정되도록 변경 (⚠️ [[core-decisions]] 2026-07-05 결정 번복). `tests/test_puzzle_model.gd`의 확정 유지 테스트 케이스를 AND 시맨틱에 맞춰 재작성(중심 블록 vs 팔 블록 시나리오로 재구성), 18개 테스트 전부 통과 확인. 별개로 `ClueDisplay._reposition`이 한 라인의 블록이 전부 제거됐을 때 바깥 경계로 폴백 배치해 라벨/칩이 허공에 떠 보이던 버그 발견 및 수정 — 이제 `front == -1`이면 라벨·칩을 숨김 (→ [[core-decisions]]).
+
+## 2026-07-11 클루 라벨 양면 표시 + 가독성/z-fighting 수정
+사용자 요청으로 `ClueDisplay`가 각 축 라인마다 클루 숫자를 한쪽 끝(+ 방향)에만 붙이던 것을 양 끝(+/−)에 모두 붙이도록 변경 — 자유 회전 카메라로 어느 방향에서 봐도 라인 시작 쪽 클루가 보임. `_frontmost_intact`(최전방, 높은 인덱스)에 대응하는 `_backmost_intact`(최후방, 낮은 인덱스)을 추가하고, 라벨/칩 딕셔너리 키에 `sign`(+1/-1)을 포함해 축당 2개씩 관리. 구현 중 `for sign in [...]`에서 sign이 Variant로 추론돼 `var base := idx * STEP - half + sign * BLOCK_SIZE / 2.0`가 타입 추론 실패로 컴파일 에러 발생 → `for sign: int in [...]`로 명시 타입 지정해 해결.
+추가로 "특정 각에서 숫자 안 보임" 버그 리포트 — 칩(원형 배경)과 라벨(숫자) 두 개의 반투명 메시가 표면에서 0.015 간격밖에 안 떨어져 있어 완만한 시야각에서 깊이정렬이 흔들려 텍스트가 칩 뒤로 밀리는 것으로 추정. `LABEL_OFFSET`/`CHIP_OFFSET` 간격을 0.015→0.06으로 벌리고, `label.render_priority=1`로 칩보다 항상 나중에 그려지도록 강제, `texture_filter`를 anisotropic mipmap으로 바꿔 완만한 각도에서 텍스트 자체가 흐려져 사라지는 것도 방지. 칩 배경도 반투명 → 불투명(진한 테두리+밝은 배경)으로, 텍스트도 진한색+굵은 흰 아웃라인으로 바꿔 블록 색과 무관하게 대비 확보 (→ [[core-decisions]]).
