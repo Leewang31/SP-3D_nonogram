@@ -23,3 +23,9 @@ CLAUDE.md 위키 운영 규칙 변경 (projects/concepts/knowledge/raw 구조 �
 
 ## 2026-07-11 퍼즐 5종 추가 + 스테이지 선택 홈 화면
 `puzzles/puzzle_02~06.json` 추가(상자/고리/계단/T자/L자, 3×3×3) — 총 6스테이지. 신규 `Home.gd`(Control, main_scene)가 `PUZZLE_PATHS` 순서대로 카드 그리드를 그리고, 탭하면 `GameState.gd`(오토로드)에 선택 경로/스테이지 번호를 저장 후 `Main.tscn`으로 전환. `Main.gd`는 하드코딩된 `PUZZLE_PATH`/`STAGE_NUMBER` 상수를 제거하고 `GameState`에서 읽도록 변경. `HUD.gd`에 홈 버튼(⌂) 추가 → `Main.gd`가 `change_scene_to_file(Home.tscn)`으로 복귀 (→ [[architecture]], [[core-decisions]]).
+
+## 2026-07-11 위키 루트 잔재 정리 + CLAUDE.md 세션룰 경로 수정
+루트에 남아있던 pre-2026-07-05 구조 잔재 `index.md`, `log.md` 삭제 (정본은 `wiki/index.md`, `wiki/log.md`). `.DS_Store`를 `.gitignore`에 추가. `CLAUDE.md` 세션시작 규칙에서 존재하지 않는 `wiki/projects/3d-nonogram.md` 참조 제거, index 기반 탐색으로 교체. Godot 에디터가 `project.godot`을 4.6으로 갱신하고 새로 생성한 `*.gd.uid` 파일들 트래킹 추가.
+
+## 2026-07-11 MUST_KEEP 판정 OR→AND 변경 + ClueDisplay 빈 라인 마커 숨김
+사용자 확인 결과 `PuzzleModel.is_confirmed_keep()`이 X/Y/Z 세 축 중 하나만 클루값과 일치해도 확정 유지(금색)로 판정하던 것을, 세 축 모두 동시에 일치해야만 확정되도록 변경 (⚠️ [[core-decisions]] 2026-07-05 결정 번복). `tests/test_puzzle_model.gd`의 확정 유지 테스트 케이스를 AND 시맨틱에 맞춰 재작성(중심 블록 vs 팔 블록 시나리오로 재구성), 18개 테스트 전부 통과 확인. 별개로 `ClueDisplay._reposition`이 한 라인의 블록이 전부 제거됐을 때 바깥 경계로 폴백 배치해 라벨/칩이 허공에 떠 보이던 버그 발견 및 수정 — 이제 `front == -1`이면 라벨·칩을 숨김 (→ [[core-decisions]]).
