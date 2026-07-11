@@ -79,8 +79,12 @@ func _reposition(axis: int, a: int, b: int) -> void:
 	var half := (n - 1) * BlockGrid.STEP / 2.0
 
 	var front := _frontmost_intact(axis, a, b)
-	var depth := front if front != -1 else n - 1   # 전부 제거되면 바깥 경계로 폴백
-	var base := depth * BlockGrid.STEP - half + BlockGrid.BLOCK_SIZE / 2.0
+	label.visible = front != -1
+	chip.visible = front != -1
+	if front == -1:
+		return   # 라인 전부 제거됨 — 붙을 표면 없음, 숨김
+
+	var base := front * BlockGrid.STEP - half + BlockGrid.BLOCK_SIZE / 2.0
 	var face := base + LABEL_OFFSET
 	var chip_face := base + CHIP_OFFSET
 

@@ -99,15 +99,23 @@ func _test_clue_z_axis(data: Dictionary) -> void:
     _assert(m.get_clue(2, 0, 0) == 0, "Z-axis clue (x=0,y=0) == 0")
 
 func _test_confirmed_keep(data: Dictionary) -> void:
+    # is_confirmed_keep requires ALL THREE axis lines through the block to have
+    # intact count == clue simultaneously (AND, not OR).
     var m = PuzzleModel.new()
     m.load_puzzle(data)
-    # X-axis row (y=1,z=1) is fully solution=1 ([1,1,1]) → intact count 3 == clue 3 from the start
-    _assert(m.is_confirmed_keep(0, 1, 1), "fully-filled row is confirmed keep before any removal")
-    # X-axis row (y=1,z=0): solution=[0,1,0], clue=1 → not confirmed while both 0-cells remain intact
-    _assert(not m.is_confirmed_keep(1, 1, 0), "keep-block not confirmed while row still has removable cells")
-    # Remove one of the two 0-cells → still not confirmed (1 removable cell left)
+    # Center block (1,1,1): X-row/Y-col/Z-pillar are each the full solid arm of the
+    # plus shape (clue == size == intact count) from the start → all 3 axes match already.
+    _assert(m.is_confirmed_keep(1, 1, 1), "center block confirmed keep before any removal (all 3 axes already match)")
+    # Arm block (1,1,0): Z-pillar (x=1,y=1) already matches (clue=3, full arm),
+    # but X-row (y=1,z=0) and Y-col (x=1,z=0) each have clue=1 with 2 removable 0-cells still intact.
+    _assert(not m.is_confirmed_keep(1, 1, 0), "arm block not confirmed while two axes still have removable cells")
+    # Clear the X-row's 0-cells: (0,1,0) and (2,1,0)
     m.remove_block(0, 1, 0)
-    _assert(not m.is_confirmed_keep(1, 1, 0), "keep-block not confirmed with one removable cell left")
-    # Remove the last 0-cell → intact count (1) == clue (1) → now confirmed
+    _assert(not m.is_confirmed_keep(1, 1, 0), "still not confirmed with one X-row cell left")
     m.remove_block(2, 1, 0)
-    _assert(m.is_confirmed_keep(1, 1, 0), "keep-block confirmed once row is reduced to clue count")
+    _assert(not m.is_confirmed_keep(1, 1, 0), "X-row now matches but Y-col still doesn't")
+    # Clear the Y-col's 0-cells: (1,0,0) and (1,2,0)
+    m.remove_block(1, 0, 0)
+    _assert(not m.is_confirmed_keep(1, 1, 0), "still missing the last Y-col removal")
+    m.remove_block(1, 2, 0)
+    _assert(m.is_confirmed_keep(1, 1, 0), "confirmed once all three axes match simultaneously")

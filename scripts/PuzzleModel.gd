@@ -72,13 +72,13 @@ func get_intact_count(axis: int, index_a: int, index_b: int) -> int:
 func is_confirmed_keep(x: int, y: int, z: int) -> bool:
     if _state[z][y][x] != BlockState.INTACT:
         return false
-    if get_intact_count(0, y, z) == get_clue(0, y, z):
-        return true
-    if get_intact_count(1, x, z) == get_clue(1, x, z):
-        return true
-    if get_intact_count(2, x, y) == get_clue(2, x, y):
-        return true
-    return false
+    if get_intact_count(0, y, z) != get_clue(0, y, z):
+        return false
+    if get_intact_count(1, x, z) != get_clue(1, x, z):
+        return false
+    if get_intact_count(2, x, y) != get_clue(2, x, y):
+        return false
+    return true
 
 func is_solved() -> bool:
     return _removed_count == _to_remove_count
