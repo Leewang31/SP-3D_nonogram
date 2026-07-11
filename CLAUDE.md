@@ -11,9 +11,9 @@
 ## 세션 시작 규칙
 
 **모든 세션은 wiki 확인으로 시작한다.**
-1. `index.md` 읽기
-2. `wiki/projects/3d-nonogram.md` 읽기
-3. `log.md` 마지막 5개 항목 확인
+1. `wiki/index.md` 읽기
+2. index에 나열된 `concepts/`, `decisions/` 관련 페이지 읽기
+3. `wiki/log.md` 마지막 5개 항목 확인
 4. 작업 컨텍스트 파악 후 실행
 
 ## 3D 노노그램이란
