@@ -8,10 +8,42 @@ const STEP := BLOCK_SIZE + BLOCK_GAP
 const DEFAULT_COLOR := Color(0.3, 0.5, 0.9)
 const CONFIRMED_COLOR := Color(0.85, 0.65, 0.15)
 
+const FACE_SHADE_SHADER_CODE := """
+shader_type spatial;
+render_mode unshaded, cull_back;
+uniform vec4 albedo : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+void fragment() {
+	vec3 n = normalize(NORMAL);
+	float shade = 0.72;
+	if (n.y > 0.5) {
+		shade = 1.00;
+	} else if (n.y < -0.5) {
+		shade = 0.60;
+	} else if (n.x > 0.5) {
+		shade = 0.80;
+	} else if (n.x < -0.5) {
+		shade = 0.66;
+	} else if (n.z > 0.5) {
+		shade = 0.90;
+	} else {
+		shade = 0.72;
+	}
+	ALBEDO = albedo.rgb * shade;
+}
+"""
+
+static var _face_shade_shader: Shader
+
 var _model: PuzzleModel
 var _blocks: Array   # [z][y][x] = Node3D
 var _filter_axis := -1
 var _filter_depth := -1
+
+static func _get_face_shade_shader() -> Shader:
+	if _face_shade_shader == null:
+		_face_shade_shader = Shader.new()
+		_face_shade_shader.code = FACE_SHADE_SHADER_CODE
+	return _face_shade_shader
 
 func setup(model: PuzzleModel) -> void:
 	_model = model
@@ -39,8 +71,9 @@ func _make_block(x: int, y: int, z: int, half: float) -> Node3D:
 	var box := BoxMesh.new()
 	box.size = Vector3(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
 	mesh.mesh = box
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = DEFAULT_COLOR
+	var mat := ShaderMaterial.new()
+	mat.shader = _get_face_shade_shader()
+	mat.set_shader_parameter("albedo", DEFAULT_COLOR)
 	mesh.material_override = mat
 	root.add_child(mesh)
 
@@ -66,16 +99,16 @@ func remove_block_visual(x: int, y: int, z: int) -> void:
 
 func set_block_confirmed(x: int, y: int, z: int, confirmed: bool) -> void:
 	var mesh := _blocks[z][y][x].get_child(0) as MeshInstance3D
-	var mat := mesh.material_override as StandardMaterial3D
-	mat.albedo_color = CONFIRMED_COLOR if confirmed else DEFAULT_COLOR
+	var mat := mesh.material_override as ShaderMaterial
+	mat.set_shader_parameter("albedo", CONFIRMED_COLOR if confirmed else DEFAULT_COLOR)
 
 func flash_block_red(x: int, y: int, z: int) -> void:
 	var mesh := _blocks[z][y][x].get_child(0) as MeshInstance3D
-	var mat := mesh.material_override as StandardMaterial3D
-	var original := mat.albedo_color
-	mat.albedo_color = Color(0.9, 0.2, 0.2)
+	var mat := mesh.material_override as ShaderMaterial
+	var original: Color = mat.get_shader_parameter("albedo")
+	mat.set_shader_parameter("albedo", Color(0.9, 0.2, 0.2))
 	await get_tree().create_timer(0.3).timeout
-	mat.albedo_color = original
+	mat.set_shader_parameter("albedo", original)
 
 func set_depth_filter(axis: int, depth: int) -> void:
 	if depth == -1:

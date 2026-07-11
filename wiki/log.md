@@ -17,3 +17,6 @@ CLAUDE.md 위키 운영 규칙 변경 (projects/concepts/knowledge/raw 구조 �
 
 ## 2026-07-05 확정 유지 블록(MUST_KEEP) 기능 추가
 어떤 축 라인이든 intact 블록 수 == 클루 값이 되면, 남은 블록은 전부 solution=1이 확정됨(더 제거할 필요 없음). `PuzzleModel`에 `get_intact_count()`, `is_confirmed_keep()` 추가(순수 함수, 상태 이중 저장 안 함). `BlockGrid.set_block_confirmed()`로 금색 표시, `Main.gd`에서 확정 블록 탭 시 페널티 없이 무시하도록 배선. 아키텍처 문서상 원래 계획됐던 `BlockState.MUST_KEEP` 개념을 동적 계산 방식으로 구현 (→ [[architecture]], [[core-decisions]]). `tests/test_puzzle_model.gd`에 케이스 추가.
+
+## 2026-07-11 claude.ai/design 목업 기반 HUD/비주얼 리뉴얼
+사용자가 claude.ai/design 프로젝트(Picross3D.dc.html)를 DesignSync로 임포트해 그대로 구현 요청. 신규 `HUD.gd`(CanvasLayer) 작성 — 스테이지뱃지, 하트 3개(lives), 기어/일시정지 버튼, 미스터리 타이틀("? ? ?" → 정답 공개)+경과 타이머, 하단 회전 힌트 pill, CLEAR!/GAME OVER 메시지. `Main.gd`는 `MAX_PENALTY=5` 숫자 카운터를 버리고 `MAX_LIVES=3` 하트 모델로 교체, 일시정지를 `get_tree().paused`에 실제로 연결(HUD는 `PROCESS_MODE_ALWAYS`로 예외 처리). `BlockGrid`는 BoxMesh 단일 머티리얼 대신 면 노멀 기반 `ShaderMaterial`(6면 개별 밝기)로 토이블록 룩 구현. `ClueDisplay`는 클루 숫자 뒤에 생성 텍스처 기반 원형 칩 배경 추가. `PuzzleModel`에 `name` 필드 추가(퍼즐 완성 시 타이틀 리빌용), `puzzles/tutorial_01.json`에 `"name": "십자가"` 반영. 목업의 다색 배색/○□ 마커 구분/undo·hint/제스처 오버레이는 기존 결정 충돌 또는 백엔드 부재로 스코프 아웃 (→ [[core-decisions]], [[architecture]]).

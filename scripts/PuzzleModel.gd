@@ -5,6 +5,7 @@ enum BlockState { INTACT, REMOVED }
 enum RemoveResult { OK, WRONG, ALREADY_REMOVED }
 
 var size: int
+var name: String = ""
 var _solution: Array   # [z][y][x] = 0|1
 var _state: Array      # [z][y][x] = BlockState
 var _removed_count: int = 0
@@ -12,6 +13,7 @@ var _to_remove_count: int = 0
 
 func load_puzzle(data: Dictionary) -> void:
     size = data["size"]
+    name = data.get("name", "")
     _solution = data["solution"]
     _state = []
     _removed_count = 0

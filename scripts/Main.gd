@@ -1,7 +1,8 @@
 # scripts/Main.gd
 extends Node3D
 
-const MAX_PENALTY := 5
+const MAX_LIVES := 3
+const STAGE_NUMBER := 1
 const PUZZLE_PATH := "res://puzzles/tutorial_01.json"
 
 var _model: PuzzleModel
@@ -9,16 +10,24 @@ var _grid: BlockGrid
 var _cam: CameraController
 var _clues: ClueDisplay
 var _gizmo: AxisGizmo
-var _penalty_label: Label
-var _penalty := 0
+var _hud: HUD
+var _lives := MAX_LIVES
 var _solved := false
+var _elapsed := 0.0
 
 func _ready() -> void:
 	_load_and_build()
 
+func _process(delta: float) -> void:
+	if _solved or _hud == null:
+		return
+	_elapsed += delta
+	_hud.set_timer_seconds(_elapsed)
+
 func _load_and_build() -> void:
-	_penalty = 0
+	_lives = MAX_LIVES
 	_solved = false
+	_elapsed = 0.0
 
 	# 기존 자식 노드 정리 (리셋 시)
 	for child in get_children():
@@ -38,8 +47,17 @@ func _load_and_build() -> void:
 
 	var env_node := WorldEnvironment.new()
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.12, 0.12, 0.15)
+	env.background_mode = Environment.BG_SKY
+	var sky_mat := ProceduralSkyMaterial.new()
+	sky_mat.sky_top_color = Color(0.75, 0.9, 0.95)
+	sky_mat.sky_horizon_color = Color(0.84, 0.94, 0.92)
+	sky_mat.ground_horizon_color = Color(0.89, 0.96, 0.89)
+	sky_mat.ground_bottom_color = Color(0.89, 0.96, 0.89)
+	sky_mat.sun_angle_max = 30.0
+	var sky := Sky.new()
+	sky.sky_material = sky_mat
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	env_node.environment = env
 	add_child(env_node)
 
@@ -67,15 +85,13 @@ func _load_and_build() -> void:
 	_cam.gizmo_tapped.connect(_gizmo.on_axis_tapped)
 
 	# UI
-	var canvas := CanvasLayer.new()
-	add_child(canvas)
-
-	_penalty_label = Label.new()
-	_penalty_label.position = Vector2(20, 20)
-	_penalty_label.add_theme_font_size_override("font_size", 36)
-	_penalty_label.modulate = Color.WHITE
-	canvas.add_child(_penalty_label)
-	_update_penalty_label()
+	_hud = HUD.new()
+	_hud.process_mode = Node.PROCESS_MODE_ALWAYS   # 일시정지 중에도 버튼 반응
+	add_child(_hud)
+	_hud.set_stage(STAGE_NUMBER)
+	_hud.set_lives(_lives, MAX_LIVES)
+	_hud.set_timer_seconds(0.0)
+	_hud.pause_pressed.connect(_on_pause_pressed)
 
 func _on_block_tapped(x: int, y: int, z: int) -> void:
 	if _solved:
@@ -91,10 +107,10 @@ func _on_block_tapped(x: int, y: int, z: int) -> void:
 			if _model.is_solved():
 				_on_solved()
 		PuzzleModel.RemoveResult.WRONG:
-			_penalty += 1
-			_update_penalty_label()
+			_lives -= 1
+			_hud.set_lives(_lives, MAX_LIVES)
 			_grid.flash_block_red(x, y, z)
-			if _penalty >= MAX_PENALTY:
+			if _lives <= 0:
 				_on_game_over()
 		PuzzleModel.RemoveResult.ALREADY_REMOVED:
 			pass
@@ -130,14 +146,15 @@ func _on_depth_changed(axis: int, depth: int) -> void:
 
 func _on_solved() -> void:
 	_solved = true
-	_penalty_label.text = "CLEAR!"
-	_penalty_label.modulate = Color.YELLOW
+	_hud.reveal_title(_model.name)
+	_hud.show_status("CLEAR!", Color(1.0, 0.82, 0.36))
 
 func _on_game_over() -> void:
 	_solved = true   # prevent re-entry during 2s wait
-	_penalty_label.text = "GAME OVER — Resetting..."
+	_hud.show_status("GAME OVER", Color(0.9, 0.3, 0.3))
 	await get_tree().create_timer(2.0).timeout
+	_hud.hide_status()
 	_load_and_build()
 
-func _update_penalty_label() -> void:
-	_penalty_label.text = "Penalties: %d / %d" % [_penalty, MAX_PENALTY]
+func _on_pause_pressed(is_paused: bool) -> void:
+	get_tree().paused = is_paused
