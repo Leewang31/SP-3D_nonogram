@@ -3,15 +3,22 @@ class_name AxisGizmo
 extends Node3D
 
 signal depth_changed(axis: int, depth: int)
+signal axis_lock_changed(is_locked: bool)
+
+const STEP_PIXELS := 60.0
+
+var _puzzle_size: int
+var _depths: Array[int] = [-1, -1, -1]   # X, Y, Z
+var _roots: Array[Node3D] = [null, null, null]
+var _bodies: Array[StaticBody3D] = [null, null, null]
+var _active_axis := -1
+var _drag_accum := 0.0
 
 static func _consume_steps(accum: float, delta: float, step_pixels: float) -> Dictionary:
 	var total := accum + delta
 	var steps := int(total / step_pixels)
 	var remainder := total - float(steps) * step_pixels
 	return {"remainder": remainder, "steps": steps}
-
-var _puzzle_size: int
-var _depths: Array[int] = [-1, -1, -1]   # X, Y, Z
 
 func setup(puzzle_size: int) -> void:
 	_puzzle_size = puzzle_size
@@ -52,15 +59,66 @@ func _add_arrow(axis: int, pos: Vector3, color: Color, rotation_euler: Vector3) 
 	root.add_child(body)
 
 	add_child(root)
+	_roots[axis] = root
+	_bodies[axis] = body
 
-func on_axis_tapped(axis: int) -> void:
-	assert(axis >= 0 and axis < 3, "AxisGizmo: axis must be 0, 1, or 2")
-	var d := _depths[axis]
-	if d == -1:
-		d = 0
-	elif d >= _puzzle_size - 1:
-		d = -1
-	else:
-		d += 1
-	_depths[axis] = d
-	depth_changed.emit(axis, d)
+func begin_drag(axis: int) -> void:
+	if _active_axis != -1:
+		return   # 이미 다른 축이 활성 — 새 grab 무시
+	_active_axis = axis
+	_drag_accum = 0.0
+	for a in 3:
+		if a != axis:
+			_roots[a].visible = false
+			_bodies[a].collision_layer = 0
+	axis_lock_changed.emit(true)
+
+func update_drag(screen_delta: Vector2) -> void:
+	if _active_axis == -1:
+		return
+	var dir := _screen_direction(_active_axis)
+	if dir == Vector2.ZERO:
+		return
+	var scalar := screen_delta.dot(dir)
+	var result := _consume_steps(_drag_accum, scalar, STEP_PIXELS)
+	var remainder: float = result["remainder"]
+	var steps: int = result["steps"]
+	if steps == 0:
+		_drag_accum = remainder
+		return
+	var current := _depths[_active_axis]
+	var target := current + steps
+	var clamped := clampi(target, 0, _puzzle_size - 1)
+	_drag_accum = 0.0 if clamped != target else remainder
+	if clamped != current:
+		_depths[_active_axis] = clamped
+		depth_changed.emit(_active_axis, clamped)
+
+func end_drag() -> void:
+	_drag_accum = 0.0
+
+func reset() -> void:
+	if _active_axis == -1:
+		return
+	var axis := _active_axis
+	_depths[axis] = -1
+	depth_changed.emit(axis, -1)
+	for a in 3:
+		_roots[a].visible = true
+		_bodies[a].collision_layer = 2
+	_active_axis = -1
+	_drag_accum = 0.0
+	axis_lock_changed.emit(false)
+
+func _screen_direction(axis: int) -> Vector2:
+	var cam := get_viewport().get_camera_3d()
+	if cam == null:
+		return Vector2.ZERO
+	var root := _roots[axis]
+	var world_dir: Vector3 = [Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1)][axis]
+	var p0 := cam.unproject_position(root.global_position)
+	var p1 := cam.unproject_position(root.global_position + world_dir * 0.5)
+	var d := p1 - p0
+	if d.length() < 0.001:
+		return Vector2.ZERO
+	return d.normalized()
