@@ -1,5 +1,7 @@
 # Picross 3D Prototype — Implementation Plan
 
+> **역사적 기록 — 완료됨.** 이 문서의 `AxisGizmo`/`CameraController` 코드 리스팅(`gizmo_tapped`, `on_axis_tapped` 등)은 2026-07-12 [[2026-07-12-axis-drag-scroll]] 작업으로 전면 교체되어 더 이상 실제 코드와 일치하지 않는다. 최초 프로토타입 빌드 당시 스냅샷으로만 참고할 것 — 현재 API는 `scripts/AxisGizmo.gd`, `scripts/CameraController.gd` 참고.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 3×3×3 Picross 3D (제거 방식) 메카닉 검증 프로토타입 — Godot 4 실행 가능한 단일 씬.

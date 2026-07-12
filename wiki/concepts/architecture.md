@@ -13,7 +13,7 @@ Main.tscn (Node3D)
 ├── WorldEnvironment      ← ProceduralSkyMaterial 파스텔 그라디언트 하늘
 ├── BlockGrid.gd          ← 6면 개별 쉐이딩 셰이더(ShaderMaterial)로 블록 렌더
 ├── ClueDisplay.gd        ← Label3D 힌트 숫자 + 원형 칩 배경(QuadMesh)
-├── AxisGizmo.gd          ← X/Y/Z 레이어 depth 탭 제어
+├── AxisGizmo.gd          ← X/Y/Z 레이어 depth 드래그 스크롤 제어 (2026-07-12, 이전 탭-사이클 방식 대체)
 ├── CameraController.gd (Camera3D)
 └── HUD.gd (CanvasLayer)  ← 스테이지뱃지, 홈 버튼, 하트(lives), 기어/일시정지 버튼,
                              미스터리 타이틀+타이머, 회전 힌트 pill, clear/game-over 메시지
