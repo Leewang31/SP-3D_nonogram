@@ -64,6 +64,10 @@
 - wiki/log.md: 시간순 작업 기록 (append-only)
 - wiki/concepts/: 기능, 시스템, 설계 개념별 페이지
 - wiki/decisions/: 주요 설계 결정과 이유
+- wiki/specs/: 브레인스토밍 설계 문서 (spec) — `superpowers:brainstorming` 스킬이 기본으로 쓰는 `docs/superpowers/specs/` 대신 이 경로 사용
+- wiki/plans/: 구현 플랜 — `superpowers:writing-plans` 스킬이 기본으로 쓰는 `docs/superpowers/plans/` 대신 이 경로 사용
+
+**중요:** 이 저장소는 `docs/superpowers/`를 쓰지 않는다. spec/plan 문서는 전부 wiki 하위(`wiki/specs/`, `wiki/plans/`)에 저장 — 모든 자료를 위키 한 곳에서 관리하기 위함(2026-07-12 결정).
 
 ## 작업 완료 후 규칙
 의미있는 변경(기능 추가/수정, 버그 수정, 설계 결정)이었다면:

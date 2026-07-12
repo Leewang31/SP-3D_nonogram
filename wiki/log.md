@@ -39,3 +39,6 @@ CLAUDE.md 위키 운영 규칙 변경 (projects/concepts/knowledge/raw 구조 �
 
 ## 2026-07-12 클루 원형 칩 배경 제거, 텍스트 단독 표시로 전환
 사용자가 숫자를 원 안에 넣는 디자인이 "비호감"이라 피드백 — `ClueDisplay`에서 칩(QuadMesh + 절차 생성 원형 텍스처) 관련 코드 전부 제거하고 `Label3D`만 남김. 배경이 없어져 대비 확보가 중요해져 텍스트를 흰색 채움 + 진한 검정 아웃라인(18px, 기존 10px)으로 변경, `font_size` 64→96로 키움. 칩-라벨 간 z-fighting 방어용으로 넣었던 `render_priority`/이중 오프셋 로직도 칩 자체가 없어지며 자연히 불필요해져 제거 (→ [[core-decisions]]).
+
+## 2026-07-12 docs/superpowers 폐지 — spec/plan을 위키로 전면 이관
+사용자 요청으로 모든 자료를 위키 한 곳에서 관리하기로 결정. `docs/superpowers/specs/*.md` 2개(2026-06-13 최초 설계, 2026-07-12 레이어 드래그스크롤 설계)와 `docs/superpowers/plans/*.md` 1개(2026-06-23 프로토타입 구현 플랜)를 각각 `wiki/specs/`, `wiki/plans/`로 이동(`git mv`)하고 빈 `docs/` 디렉터리 삭제. `CLAUDE.md` Wiki 운영 규칙에 `wiki/specs/`, `wiki/plans/` 항목 추가 + "docs/superpowers 안 씀" 명시 — `superpowers:brainstorming`/`writing-plans` 스킬의 기본 경로(`docs/superpowers/...`)를 이 프로젝트에서는 항상 오버라이드해야 함. `wiki/index.md`에 specs/plans 섹션 추가.
