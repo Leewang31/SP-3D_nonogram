@@ -223,7 +223,8 @@ func set_timer_seconds(seconds: float) -> void:
 	_timer_label.text = "⏱ %02d:%02d" % [mm, ss]
 
 func reveal_title(text: String) -> void:
-	_title_label.text = text
+	_title_label.text = text if text != "" else "완성!"
+	_title_label.add_theme_color_override("font_color", INK)
 
 func show_status(text: String, color: Color) -> void:
 	_message_label.text = text
