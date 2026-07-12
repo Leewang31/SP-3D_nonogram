@@ -93,6 +93,8 @@ func update_drag(screen_delta: Vector2) -> void:
 	if clamped != current:
 		_depths[_active_axis] = clamped
 		depth_changed.emit(_active_axis, clamped)
+		if clamped == _puzzle_size - 1:
+			_unlock()   # 최상단(=전체 표시와 시각적으로 동일) 도달 — 자동으로 잠금 해제
 
 func end_drag() -> void:
 	_drag_accum = 0.0
@@ -103,6 +105,9 @@ func reset() -> void:
 	var axis := _active_axis
 	_depths[axis] = -1
 	depth_changed.emit(axis, -1)
+	_unlock()
+
+func _unlock() -> void:
 	for a in 3:
 		_roots[a].visible = true
 		_bodies[a].collision_layer = 2
