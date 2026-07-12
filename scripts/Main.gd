@@ -81,7 +81,9 @@ func _load_and_build() -> void:
 	_cam = CameraController.new()
 	add_child(_cam)
 	_cam.block_tapped.connect(_on_block_tapped)
-	_cam.gizmo_tapped.connect(_gizmo.on_axis_tapped)
+	_cam.gizmo_drag_started.connect(_gizmo.begin_drag)
+	_cam.gizmo_drag_updated.connect(_gizmo.update_drag)
+	_cam.gizmo_drag_ended.connect(_gizmo.end_drag)
 
 	# UI
 	_hud = HUD.new()
@@ -92,6 +94,8 @@ func _load_and_build() -> void:
 	_hud.set_timer_seconds(0.0)
 	_hud.pause_pressed.connect(_on_pause_pressed)
 	_hud.home_pressed.connect(_on_home_pressed)
+	_hud.reset_pressed.connect(_gizmo.reset)
+	_gizmo.axis_lock_changed.connect(_hud.set_reset_enabled)
 
 func _on_block_tapped(x: int, y: int, z: int) -> void:
 	if _solved:
