@@ -121,7 +121,7 @@ func set_depth_filter(axis: int, depth: int) -> void:
 				for x in n:
 					if _model.get_block_state(x, y, z) == PuzzleModel.BlockState.REMOVED:
 						continue
-					_blocks[z][y][x].visible = true
+					_set_block_visible(x, y, z, true)
 		return
 	_filter_axis = axis
 	_filter_depth = depth
@@ -131,7 +131,13 @@ func set_depth_filter(axis: int, depth: int) -> void:
 			for x in n:
 				if _model.get_block_state(x, y, z) == PuzzleModel.BlockState.REMOVED:
 					continue
-				_blocks[z][y][x].visible = _is_visible(x, y, z)
+				_set_block_visible(x, y, z, _is_visible(x, y, z))
+
+func _set_block_visible(x: int, y: int, z: int, vis: bool) -> void:
+	var block: Node3D = _blocks[z][y][x]
+	block.visible = vis
+	var body := block.get_child(1) as StaticBody3D
+	body.collision_layer = 1 if vis else 0
 
 func _is_visible(x: int, y: int, z: int) -> bool:
 	if _filter_axis == -1:
