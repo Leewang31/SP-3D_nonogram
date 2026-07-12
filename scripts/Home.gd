@@ -10,6 +10,11 @@ const PUZZLE_PATHS := [
 	"res://puzzles/puzzle_04.json",
 	"res://puzzles/puzzle_05.json",
 	"res://puzzles/puzzle_06.json",
+	"res://puzzles/puzzle_07.json",
+	"res://puzzles/puzzle_08.json",
+	"res://puzzles/puzzle_09.json",
+	"res://puzzles/puzzle_10.json",
+	"res://puzzles/puzzle_11.json",
 ]
 
 const CARD_COLOR := Color(1, 1, 1)

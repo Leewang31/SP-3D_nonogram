@@ -70,6 +70,13 @@ Home.gd `PUZZLE_PATHS` 상수 배열로 순서 고정 (디렉터리 알파벳 �
 | 4 | puzzle_04.json | 계단 | 3단 계단 |
 | 5 | puzzle_05.json | T자 | |
 | 6 | puzzle_06.json | L자 | |
+| 7 | puzzle_07.json | 다이아몬드 | 4×4×4, 맨해튼 거리 기반 |
+| 8 | puzzle_08.json | 피라미드 | 4×4×4, 계단식 4단 |
+| 9 | puzzle_09.json | 고리 | 4×4×4, 사각 튜브(중간 2개 층) |
+| 10 | puzzle_10.json | 계단 | 4×4×4, x축 따라 상승 |
+| 11 | puzzle_11.json | 구 | 4×4×4, 유클리드 거리 근사 |
+
+7번부터는 `size=4` — `PuzzleModel`/`BlockGrid`/`ClueDisplay` 모두 `_model.size`를 동적 참조하므로 격자 크기 변경에 별도 대응 불필요.
 
 ---
 
