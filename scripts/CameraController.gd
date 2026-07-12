@@ -30,7 +30,9 @@ func _ready() -> void:
 func reset_transform() -> void:
 	_update_camera()
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
+	# HUD 버튼(PanelContainer/Button)이 먼저 소비한 터치는 여기 도달하지 않음 —
+	# 버튼 탭이 뒤쪽 3D 블록/기즈모 레이캐스트로 새는 것을 방지.
 	if event is InputEventScreenTouch:
 		_on_touch(event)
 	elif event is InputEventScreenDrag:

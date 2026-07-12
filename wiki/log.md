@@ -61,3 +61,6 @@ Godot 바이너리 없어 헤드리스/에디터 실행 대신 코드 정적 추
 
 ## 2026-07-12 그룹 힌트 마커 추가 — 위첨자 숫자 방식
 2026-06-23/2026-07-12 두 차례 백로그됐던 ○/□ 힌트 마커를 사용자 제안으로 재검토·구현. 원작은 "숫자+○(2그룹 이상)"/"숫자+□(3그룹 이상)"로 정확한 그룹 개수를 뭉뚱그리는데, 대신 위첨자 유니코드 숫자로 정확한 그룹 개수를 표시하는 방식 채택(예: 남을 블록 3개가 2덩어리로 나뉘면 "3²", 3덩어리면 "3³"). `PuzzleModel.get_group_count(axis, index_a, index_b)` 순수 함수 추가(라인에서 연속 1-런 개수 계산) — `tests/test_puzzle_model.gd`에 분리/연속/빈 라인 3케이스 검증 추가. `ClueDisplay._add_label`이 `get_clue`+`get_group_count`를 조합해 텍스트를 만들고(`_format_clue_text`), 그룹 1개 이하면 위첨자 없이 숫자만 — 별도 도형 메시 없이 기존 Label3D 텍스트 접미사만으로 구현해 2026-07-12 칩 제거 이후의 "텍스트 단독" 스타일과 자연스럽게 맞음 (→ [[core-decisions]], [[architecture]]).
+
+## 2026-07-12 HUD 버튼 탭이 3D 레이캐스트로 새는 문제 수정
+드래그 스크롤 구현 최종 리뷰(opus)에서 Minor로 남겨뒀던 항목 — `CameraController`가 `_input()`을 쓰고 있어 Godot 입력 처리 순서(`_input` → GUI → `_unhandled_input`)상 HUD 버튼(일시정지/리셋/기어/홈)을 눌러도 GUI가 이벤트를 완전히 소비하기 전에 카메라가 먼저 그 터치를 받아 블록/기즈모 레이캐스트를 시도할 수 있었음. 버튼이 화면상 3D 큐브와 겹치면 버튼 탭 한 번에 블록까지 같이 반응할 위험. `_input()` → `_unhandled_input()`로 변경 — `Button`(기본 `mouse_filter=STOP`)이 소비한 터치는 더 이상 `CameraController`까지 전파되지 않음 (→ [[core-decisions]]).
