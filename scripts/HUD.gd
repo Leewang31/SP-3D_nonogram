@@ -4,6 +4,7 @@ extends CanvasLayer
 
 signal pause_pressed(is_paused: bool)
 signal home_pressed
+signal reset_pressed
 
 const CARD_COLOR := Color(1, 1, 1)
 const CARD_SHADOW := Color(0.835, 0.871, 0.902)
@@ -20,6 +21,7 @@ var _timer_label: Label
 var _message_label: Label
 var _max_lives := 3
 var _is_paused := false
+var _reset_btn: Button
 
 func _ready() -> void:
 	layer = 10
@@ -49,6 +51,11 @@ func _build() -> void:
 	var spacer2 := Control.new()
 	spacer2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_bar.add_child(spacer2)
+
+	_reset_btn = _make_icon_button("↻")
+	_reset_btn.disabled = true
+	_reset_btn.pressed.connect(func(): reset_pressed.emit())
+	top_bar.add_child(_reset_btn)
 
 	top_bar.add_child(_make_icon_button("⚙"))
 
@@ -225,3 +232,6 @@ func show_status(text: String, color: Color) -> void:
 
 func hide_status() -> void:
 	_message_label.visible = false
+
+func set_reset_enabled(enabled: bool) -> void:
+	_reset_btn.disabled = not enabled
