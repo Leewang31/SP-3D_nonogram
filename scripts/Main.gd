@@ -69,7 +69,7 @@ func _load_and_build() -> void:
 	# 힌트 숫자
 	_clues = ClueDisplay.new()
 	add_child(_clues)
-	_clues.setup(_model)
+	_clues.setup(_model, _grid)
 
 	# 축 기즈모
 	_gizmo = AxisGizmo.new()
@@ -106,7 +106,6 @@ func _on_block_tapped(x: int, y: int, z: int) -> void:
 	match result:
 		PuzzleModel.RemoveResult.OK:
 			_grid.remove_block_visual(x, y, z)
-			_clues.on_block_removed(x, y, z)
 			_refresh_confirmed_lines(x, y, z)
 			if _model.is_solved():
 				_on_solved()

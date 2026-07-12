@@ -91,6 +91,9 @@ func _make_block(x: int, y: int, z: int, half: float) -> Node3D:
 
 	return root
 
+func get_block(x: int, y: int, z: int) -> Node3D:
+	return _blocks[z][y][x]
+
 func remove_block_visual(x: int, y: int, z: int) -> void:
 	var block: Node3D = _blocks[z][y][x]
 	block.visible = false

@@ -2,33 +2,29 @@
 class_name ClueDisplay
 extends Node3D
 
-const LABEL_OFFSET := 0.06   # 그리드 바깥쪽 경계에서 떨어진 거리
+const LABEL_OFFSET := 0.06   # 블록 표면에서 띄우는 거리
 const SIGN_POS := 1
 const SIGN_NEG := -1
 const SUPERSCRIPT_DIGITS := {2: "²", 3: "³", 4: "⁴", 5: "⁵", 6: "⁶", 7: "⁷", 8: "⁸", 9: "⁹"}
 
 var _model: PuzzleModel
 
-func setup(model: PuzzleModel) -> void:
+# 라벨을 그리드 바깥 경계가 아니라 각 블록 표면에 직접 부착 — 블록이 depth 필터/제거로
+# 숨겨지면 자식인 라벨도 자동으로 같이 숨겨져(Node3D visible 상속) "허공에 뜬 숫자" 문제가
+# 구조적으로 발생하지 않음. 같은 라인의 다른 블록에는 같은 클루가 중복 부착되지만
+# 항상 그 라인에서 가장 앞쪽(카메라 쪽) 노출 블록만 불투명 큐브에 가려지지 않고 보임.
+func setup(model: PuzzleModel, grid: BlockGrid) -> void:
 	_model = model
 	var n := model.size
-	var half := (n - 1) * BlockGrid.STEP / 2.0
-	var edge := half + BlockGrid.BLOCK_SIZE / 2.0
-
 	for z in n:
 		for y in n:
-			_add_label(0, y, z, half, edge)
-	for z in n:
-		for x in n:
-			_add_label(1, x, z, half, edge)
-	for y in n:
-		for x in n:
-			_add_label(2, x, y, half, edge)
+			for x in n:
+				var block := grid.get_block(x, y, z)
+				_add_block_labels(block, 0, y, z)
+				_add_block_labels(block, 1, x, z)
+				_add_block_labels(block, 2, x, y)
 
-func on_block_removed(_x: int, _y: int, _z: int) -> void:
-	pass   # 클루 위치는 그리드 바깥 경계에 고정 — 블록 상태와 무관해 갱신 불필요
-
-func _add_label(axis: int, a: int, b: int, half: float, edge: float) -> void:
+func _add_block_labels(block: Node3D, axis: int, a: int, b: int) -> void:
 	var clue := _model.get_clue(axis, a, b)
 	var groups := _model.get_group_count(axis, a, b)
 	var text := _format_clue_text(clue, groups)
@@ -36,13 +32,13 @@ func _add_label(axis: int, a: int, b: int, half: float, edge: float) -> void:
 		var label := _make_label(text)
 		label.rotation = _face_rotation(axis, sign)
 
-		var face := sign * (edge + LABEL_OFFSET)
+		var offset := sign * (BlockGrid.BLOCK_SIZE / 2.0 + LABEL_OFFSET)
 		match axis:
-			0: label.position = Vector3(face, a * BlockGrid.STEP - half, b * BlockGrid.STEP - half)
-			1: label.position = Vector3(a * BlockGrid.STEP - half, face, b * BlockGrid.STEP - half)
-			2: label.position = Vector3(a * BlockGrid.STEP - half, b * BlockGrid.STEP - half, face)
+			0: label.position = Vector3(offset, 0, 0)
+			1: label.position = Vector3(0, offset, 0)
+			2: label.position = Vector3(0, 0, offset)
 
-		add_child(label)
+		block.add_child(label)
 
 func _face_rotation(axis: int, sign: int) -> Vector3:
 	match axis:

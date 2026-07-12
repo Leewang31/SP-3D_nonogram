@@ -64,3 +64,9 @@ Godot 바이너리 없어 헤드리스/에디터 실행 대신 코드 정적 추
 
 ## 2026-07-12 HUD 버튼 탭이 3D 레이캐스트로 새는 문제 수정
 드래그 스크롤 구현 최종 리뷰(opus)에서 Minor로 남겨뒀던 항목 — `CameraController`가 `_input()`을 쓰고 있어 Godot 입력 처리 순서(`_input` → GUI → `_unhandled_input`)상 HUD 버튼(일시정지/리셋/기어/홈)을 눌러도 GUI가 이벤트를 완전히 소비하기 전에 카메라가 먼저 그 터치를 받아 블록/기즈모 레이캐스트를 시도할 수 있었음. 버튼이 화면상 3D 큐브와 겹치면 버튼 탭 한 번에 블록까지 같이 반응할 위험. `_input()` → `_unhandled_input()`로 변경 — `Button`(기본 `mouse_filter=STOP`)이 소비한 터치는 더 이상 `CameraController`까지 전파되지 않음 (→ [[core-decisions]]).
+
+## 2026-07-12 클루 라벨 "허공에 뜸" 재발 — 블록 자식 부착 방식으로 재설계
+사용자가 스크린샷으로 다른 버그 제보: 그리드 경계 고정 라벨(위 2026-07-12 항목)이 depth 드래그 스크롤로 절단면이 이동해도 안 따라가고 안 숨겨져, 실제 잘려나간 면과 숫자 위치가 어긋나 붕 떠 보임. 사용자가 "차라리 모든 큐브에 숫자를 다 적어두는 게 더 간편한 구현"이라고 제안 — 승인.
+`BlockGrid.gd`에 `get_block(x,y,z)` 접근자 추가. `ClueDisplay.setup(model, grid)`로 시그니처 변경 — 그리드 경계 좌표 계산(half/edge) 전부 제거하고, 각 블록(x,y,z)마다 자신이 속한 3개 라인(X/Y/Z축)의 클루 라벨을 블록 로컬 좌표(±BLOCK_SIZE/2 + LABEL_OFFSET)로 계산해 **블록 노드의 자식으로 직접 부착**. `Node3D.visible=false`가 자식까지 전파되는 Godot 특성을 이용해 블록이 숨겨지면(depth 필터든 제거든) 라벨도 자동으로 같이 숨겨짐 — 별도 갱신 로직 불필요. `Main.gd`의 `_clues.on_block_removed(x,y,z)` 호출과 `ClueDisplay.on_block_removed`(빈 스텁이었음) 완전 삭제.
+같은 라인의 여러 블록에 동일 클루 텍스트가 중복 부착되지만, 앞쪽 블록의 불투명 큐브가 뒤쪽 라벨을 depth test로 자연히 가려주므로 항상 "그 라인에서 지금 노출된 가장 앞쪽 표면"에만 숫자가 보임 — 별도의 "최전방 탐색" 로직 없이 occlusion만으로 원래 의도한 동작이 나옴. 트레이드오프로 라벨 노드 수가 축당 n배 증가(경계 고정 방식은 축당 2개 고정, 새 방식은 축당 2n개) — 4×4×4 퍼즐(스테이지 7~11) 기준 라인당 8개, 프로토타입 규모에서는 허용 범위로 판단.
+헤드리스 검증: `godot --headless --quit-after 60 Main.tscn` 스크립트 파싱/런타임 에러 없이 클린 종료 확인, `tests/test_puzzle_model.gd`(23 passed) / `tests/test_axis_gizmo.gd`(12 passed) 회귀 전부 통과 (→ [[architecture]], [[core-decisions]]).
