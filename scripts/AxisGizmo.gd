@@ -4,6 +4,12 @@ extends Node3D
 
 signal depth_changed(axis: int, depth: int)
 
+static func _consume_steps(accum: float, delta: float, step_pixels: float) -> Dictionary:
+	var total := accum + delta
+	var steps := int(total / step_pixels)
+	var remainder := total - float(steps) * step_pixels
+	return {"remainder": remainder, "steps": steps}
+
 var _puzzle_size: int
 var _depths: Array[int] = [-1, -1, -1]   # X, Y, Z
 
