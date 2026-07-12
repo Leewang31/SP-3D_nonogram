@@ -1,3 +1,4 @@
 .godot/
 .claude/settings.local.json
 .DS_Store
+.superpowers/
