@@ -35,6 +35,7 @@ puzzle.json → PuzzleModel.gd → BlockGrid.gd (렌더링)
 func load_puzzle(data: Dictionary) -> void
 func remove_block(x, y, z: int) -> RemoveResult          # OK | WRONG | ALREADY_REMOVED
 func get_clue(axis: int, index_a: int, index_b: int) -> int
+func get_group_count(axis: int, index_a: int, index_b: int) -> int   # 라인 내 연속 1-런 개수 (그룹 힌트 마커용)
 func get_intact_count(axis: int, index_a: int, index_b: int) -> int
 func is_confirmed_keep(x, y, z: int) -> bool             # 라인 intact 수 == 클루 → 유지 확정
 func is_solved() -> bool

@@ -5,6 +5,7 @@ extends Node3D
 const LABEL_OFFSET := 0.06   # 그리드 바깥쪽 경계에서 떨어진 거리
 const SIGN_POS := 1
 const SIGN_NEG := -1
+const SUPERSCRIPT_DIGITS := {2: "²", 3: "³", 4: "⁴", 5: "⁵", 6: "⁶", 7: "⁷", 8: "⁸", 9: "⁹"}
 
 var _model: PuzzleModel
 
@@ -28,9 +29,11 @@ func on_block_removed(_x: int, _y: int, _z: int) -> void:
 	pass   # 클루 위치는 그리드 바깥 경계에 고정 — 블록 상태와 무관해 갱신 불필요
 
 func _add_label(axis: int, a: int, b: int, half: float, edge: float) -> void:
+	var clue := _model.get_clue(axis, a, b)
+	var groups := _model.get_group_count(axis, a, b)
+	var text := _format_clue_text(clue, groups)
 	for sign: int in [SIGN_POS, SIGN_NEG]:
-		var clue := _model.get_clue(axis, a, b)
-		var label := _make_label(str(clue))
+		var label := _make_label(text)
 		label.rotation = _face_rotation(axis, sign)
 
 		var face := sign * (edge + LABEL_OFFSET)
@@ -46,6 +49,11 @@ func _face_rotation(axis: int, sign: int) -> Vector3:
 		0: return Vector3(0, PI / 2.0 * sign, 0)                       # X+/X- 면을 바라보도록 회전
 		1: return Vector3(-PI / 2.0 * sign, 0, 0)                      # Y+/Y- 면을 바라보도록 회전
 		_: return Vector3.ZERO if sign > 0 else Vector3(0, PI, 0)      # Z+ (기본) / Z-
+
+func _format_clue_text(clue: int, groups: int) -> String:
+	if groups < 2:
+		return str(clue)
+	return str(clue) + SUPERSCRIPT_DIGITS.get(groups, "⁺")   # 덩어리 2개 이상이면 위첨자로 정확한 개수 표시
 
 func _make_label(text: String) -> Label3D:
 	var label := Label3D.new()

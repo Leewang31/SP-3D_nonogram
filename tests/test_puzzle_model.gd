@@ -25,6 +25,7 @@ func _init() -> void:
     _test_clue_x_axis(data)
     _test_clue_z_axis(data)
     _test_confirmed_keep(data)
+    _test_group_count(data)
 
     print("\nResults: %d passed, %d failed" % [_passed, _failed])
     quit(_failed)
@@ -119,3 +120,23 @@ func _test_confirmed_keep(data: Dictionary) -> void:
     _assert(not m.is_confirmed_keep(1, 1, 0), "still missing the last Y-col removal")
     m.remove_block(1, 2, 0)
     _assert(m.is_confirmed_keep(1, 1, 0), "confirmed once all three axes match simultaneously")
+
+func _test_group_count(_unused: Dictionary) -> void:
+    # X-axis rows (index_a=y, index_b=z), size=3:
+    #   (y=0,z=0) = [1,0,1] -> 2 separate groups
+    #   (y=1,z=0) = [1,1,1] -> 1 contiguous group
+    #   (y=2,z=0) = [0,0,0] -> 0 groups (empty)
+    var split_data := {
+        "id": "group_count_test",
+        "size": 3,
+        "solution": [
+            [[1,0,1],[1,1,1],[0,0,0]],
+            [[0,0,0],[0,0,0],[0,0,0]],
+            [[0,0,0],[0,0,0],[0,0,0]]
+        ]
+    }
+    var m = PuzzleModel.new()
+    m.load_puzzle(split_data)
+    _assert(m.get_group_count(0, 0, 0) == 2, "split row [1,0,1] has 2 groups")
+    _assert(m.get_group_count(0, 1, 0) == 1, "contiguous row [1,1,1] has 1 group")
+    _assert(m.get_group_count(0, 2, 0) == 0, "empty row [0,0,0] has 0 groups")

@@ -52,6 +52,28 @@ func get_clue(axis: int, index_a: int, index_b: int) -> int:
                 count += _solution[z][index_b][index_a]
     return count
 
+func get_group_count(axis: int, index_a: int, index_b: int) -> int:
+    var line: Array = []
+    match axis:
+        0:  # X: index_a=y, index_b=z
+            for x in size:
+                line.append(_solution[index_b][index_a][x])
+        1:  # Y: index_a=x, index_b=z
+            for y in size:
+                line.append(_solution[index_b][y][index_a])
+        2:  # Z: index_a=x, index_b=y
+            for z in size:
+                line.append(_solution[z][index_b][index_a])
+    var groups := 0
+    var in_run := false
+    for v in line:
+        if v == 1 and not in_run:
+            groups += 1
+            in_run = true
+        elif v == 0:
+            in_run = false
+    return groups
+
 func get_intact_count(axis: int, index_a: int, index_b: int) -> int:
     var count := 0
     match axis:
