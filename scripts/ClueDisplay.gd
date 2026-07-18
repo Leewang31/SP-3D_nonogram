@@ -30,7 +30,7 @@ func _add_block_labels(block: Node3D, axis: int, a: int, b: int) -> void:
 	var text := _format_clue_text(clue, groups)
 	for sign: int in [SIGN_POS, SIGN_NEG]:
 		var label := _make_label(text)
-		label.rotation = _face_rotation(axis, sign)
+		_apply_face_orientation(label, axis, sign)
 
 		var offset := sign * (BlockGrid.BLOCK_SIZE / 2.0 + LABEL_OFFSET)
 		match axis:
@@ -40,11 +40,20 @@ func _add_block_labels(block: Node3D, axis: int, a: int, b: int) -> void:
 
 		block.add_child(label)
 
-func _face_rotation(axis: int, sign: int) -> Vector3:
-	match axis:
-		0: return Vector3(0, PI / 2.0 * sign, 0)                       # X+/X- 면을 바라보도록 회전
-		1: return Vector3(-PI / 2.0 * sign, 0, 0)                      # Y+/Y- 면을 바라보도록 회전
-		_: return Vector3.ZERO if sign > 0 else Vector3(0, PI, 0)      # Z+ (기본) / Z-
+# Label3D의 가독면은 로컬 +Z(기존 Z+/기본 케이스로 검증된 기준). X/Z 측면 라벨은
+# looking_at()으로 바깥쪽 법선을 향해 견고하게 정렬 — 기존에 축별로 손으로 유도한
+# 오일러각 공식이 X-/Z- 면에서 라벨 뒷면(거울에 비친 좌우反전 글자)을 보여주는
+# 버그를 유발해(2026-07-18 QA 스크린샷 제보), looking_at 기반으로 교체.
+# Y(상/하)면은 법선이 world up과 평행해 looking_at의 up 기준이 성립하지 않으므로
+# 기존 X축 회전 방식을 그대로 유지.
+func _apply_face_orientation(label: Label3D, axis: int, sign: int) -> void:
+	if axis == 1:
+		label.rotation = Vector3(-PI / 2.0 * sign, 0, 0)
+		return
+	var normal := Vector3(sign, 0, 0) if axis == 0 else Vector3(0, 0, sign)
+	var t := label.transform
+	t.basis = Basis.looking_at(-normal, Vector3.UP)
+	label.transform = t
 
 func _format_clue_text(clue: int, groups: int) -> String:
 	if groups < 2:
